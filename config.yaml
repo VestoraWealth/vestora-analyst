@@ -1,0 +1,72 @@
+# =====================================================================
+#  VESTORA ANALYST — settings
+#  Edit the numbers below to tune the analyser. Lines starting with #
+#  are notes and are ignored. Keep the spacing (indentation) as it is.
+# =====================================================================
+
+# ---------- Swing-timing model (market breadth of the Nifty 50) ----------
+breadth:
+  dma_short: 50            # main breadth line: % of stocks above this DMA
+  dma_long: 200            # trend-health line: % of stocks above this DMA
+  momentum_days: 5         # breadth change is measured over this many sessions
+  best_zone_min: 60        # breadth >= this (and not falling) = BEST TIME for swings
+  good_zone_min: 50        # breadth >= this and rising = GOOD, be selective
+  weak_zone_max: 40        # breadth below this and falling = AVOID
+  oversold_max: 25         # breadth at/below this = oversold, watch for reversal
+  overheated_min: 85       # breadth at/above this = OVERHEATED, don't chase
+  reversal_jump: 10        # oversold + breadth up this many points in 5 days = EARLY REVERSAL
+  thrust_from: 25          # breadth thrust: from <= this ...
+  thrust_to: 60            # ... to >= this ...
+  thrust_window: 10        # ... within this many sessions
+
+# ---------- Sectors ----------
+sectors:
+  min_breadth_pct: 50      # a sector has "good breadth" when this % of its stocks are above the 50 DMA
+  exit_breadth_pct: 35     # a watchlist stock is dropped if its sector's breadth falls below this
+
+# ---------- Best stocks (technical leader filter) ----------
+leaders:
+  require_above_50dma: true
+  require_50_above_200: true   # 50 DMA above 200 DMA = stock in an uptrend
+  slope_days: 10               # 50 DMA must be rising over this many sessions
+  max_off_52w_high_pct: 15     # within this % of the 52-week high
+  rs_lookback_days: 63         # relative strength vs Nifty over ~3 months
+  extended_above_50dma_pct: 12 # more than this % above 50 DMA = "extended, wait for pullback"
+  fresh_cross_days: 5          # crossed above 50 DMA within this many sessions = "fresh breakout"
+  exit_buffer_pct: 1           # a watchlist stock is dropped when it closes this % below its 50 DMA
+
+# ---------- Fundamental screen (run on every stock that enters the list) ----------
+fundamentals:
+  max_debt_to_equity: 0.5
+  min_sales_cagr_3y_pct: 15
+  require_zero_pledge: true
+  require_profitable: true
+  max_peg: 1.5                 # PEG ratio must be at or below this
+  min_piotroski: 6             # "above 5" = 6 or more (out of 9)
+  min_market_cap_cr: 10000
+  skip_debt_check_sectors:     # debt/equity is not meaningful for lenders & insurers
+    - Financial Services
+  cache_days: 7                # re-check fundamentals of a stock at most once a week
+  pledge_overrides: {}         # e.g.  ADANIENT: 0.0   (promoter pledge %, if you know it)
+
+# ---------- WhatsApp alerts ----------
+alerts:
+  provider: textmebot          # textmebot (paid, sends from your linked WhatsApp), callmebot (free) or twilio
+  # The phone number and keys are NOT written here. They are stored as
+  # GitHub "Secrets" (see SETUP_GUIDE.md):
+  #   WHATSAPP_PHONE      the number that RECEIVES alerts, e.g. +919048595992
+  #   TEXTMEBOT_APIKEY    the key TextMeBot emails you
+  #   (CallMeBot only) CALLMEBOT_APIKEY
+  #   (Twilio only) TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM
+  on_mode_change: true         # market mode changes (e.g. NEUTRAL -> BEST TIME)
+  on_breadth_thrust: true      # rare, powerful buy signal
+  on_new_stock: true           # a new stock enters the Vestora watchlist (with fundamentals)
+  on_stock_exit: true          # a stock drops out of the watchlist
+  on_index_change: true        # Nifty 50 adds or removes a company
+  daily_summary: true          # one end-of-day summary message
+  max_message_chars: 1400
+
+# ---------- Dashboard ----------
+dashboard:
+  history_sessions: 250        # how much breadth history to chart (~1 year)
+  title: VESTORA ANALYST

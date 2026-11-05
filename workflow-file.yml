@@ -1,0 +1,90 @@
+name: Vestora Analyst
+
+on:
+  schedule:
+    # 10:45 UTC = 4:15 PM IST, Monday to Friday (after NSE closes at 3:30 PM).
+    # NSE holidays are detected automatically: no new session = no alerts.
+    - cron: "45 10 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "What to run"
+        type: choice
+        default: normal
+        options:
+          - normal
+          - test-whatsapp
+          - dry-run
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: vestora-analyst
+  cancel-in-progress: false
+
+jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run VESTORA ANALYST
+        env:
+          WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }}
+          TEXTMEBOT_APIKEY: ${{ secrets.TEXTMEBOT_APIKEY }}
+          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
+        run: |
+          case "${{ inputs.mode }}" in
+            test-whatsapp) python run.py --test-whatsapp ;;
+            dry-run)       python run.py --dry-run --force ;;
+            *)             python run.py ;;
+          esac
+
+      - name: Save the analyser's memory (state + dashboard)
+        if: inputs.mode != 'test-whatsapp' && inputs.mode != 'dry-run'
+        run: |
+          git config user.name "vestora-analyst-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs state
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "Analyser run $(TZ=Asia/Kolkata date '+%d %b %Y %H:%M IST')"
+            git push
+          fi
+
+      - name: Prepare dashboard for GitHub Pages
+        if: inputs.mode != 'test-whatsapp'
+        uses: actions/configure-pages@v5
+
+      - name: Upload dashboard
+        if: inputs.mode != 'test-whatsapp'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Publish dashboard
+        if: inputs.mode != 'test-whatsapp'
+        id: deployment
+        uses: actions/deploy-pages@v4

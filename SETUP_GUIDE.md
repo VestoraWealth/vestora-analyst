@@ -75,7 +75,7 @@ All thresholds are in **`config.yaml`**. Open it on GitHub, click the pencil ico
 
 - `best_zone_min: 60` — breadth needed for "BEST TIME FOR SWINGS"
 - `min_breadth_pct: 50` — breadth a sector needs for its stocks to make the watchlist
-- `max_peg: 1.5`, `min_piotroski: 6`, `max_debt_to_equity: 0.5` — fundamental filters
+- `min_profit_cagr_3y_pct: 15`, `min_piotroski: 6`, `max_debt_to_equity: 0.5` — fundamental filters
 - `daily_summary: false` — turn off the daily summary and keep only event alerts
 
 ## What each WhatsApp alert means
@@ -103,7 +103,7 @@ Debt to equity < 0.5 AND
 Sales growth 3Years > 15 AND
 Pledged percentage = 0 AND
 Net profit > 0 AND
-PEG Ratio < 1.5 AND
+Profit growth 3Years > 15 AND
 Piotroski score > 5 AND
 Market Capitalization > 10000
 ```

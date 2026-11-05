@@ -5,7 +5,7 @@ Criteria (all editable in config.yaml):
   * Sales growth, 3-year CAGR, 15% or more
   * Promoter pledge = 0%
   * Profitable (net profit > 0 in the latest two years)
-  * PEG ratio at or below 1.5
+  * Profit growth, 3-year CAGR, 15% or more
   * Piotroski F-score 6 or more (i.e. above 5)
   * Market cap above Rs 10,000 crore
 
@@ -273,28 +273,25 @@ def evaluate(raw: dict, sector: str, cfg: dict, pledge: float | None = None, ple
             f"₹{ni0/CRORE:,.0f} Cr profit" if ni0 > 0 else f"Loss ₹{abs(ni0)/CRORE:,.0f} Cr",
             "pass" if ok else "fail", rule)
 
-    # 5. PEG
-    rule = f"at or below {fc['max_peg']}"
-    peg = raw.get("peg_info")
-    peg_note = ""
-    if peg is None:
-        pe = raw.get("pe")
-        if pe is None and raw.get("market_cap") and ni0 and ni0 > 0:
-            pe = raw["market_cap"] / ni0
-        eg = cagr(ni0, _g(raw, "net_income", 3), 3) or cagr(ni0, _g(raw, "net_income", 2), 2)
-        if pe is not None and eg is not None and eg > 0:
-            peg = pe / (eg * 100)
-            peg_note = " (calc)"
-        elif eg is not None and eg <= 0:
-            peg_note = "no growth"
-        elif ni0 is not None and ni0 <= 0:
-            peg_note = "no growth"
-    if peg is None:
-        add("peg", "PEG ratio", None, peg_note or "no data",
-            "fail" if peg_note == "no growth" else "check", rule)
+    # 5. Profit growth (3-year CAGR of net profit)
+    rule = f"{fc['min_profit_cagr_3y_pct']}%+"
+    label = "Profit growth (3Y CAGR)"
+    ni3 = _g(raw, "net_income", 3)
+    if ni0 is not None and ni0 <= 0:
+        add("pgrowth", label, None, "loss in latest year", "fail", rule)
+    elif cagr(ni0, ni3, 3) is not None:
+        p3 = cagr(ni0, ni3, 3)
+        add("pgrowth", label, round(p3 * 100, 1), f"{p3*100:.1f}%",
+            "pass" if p3 * 100 >= fc["min_profit_cagr_3y_pct"] else "fail", rule)
+    elif ni3 is not None and ni3 <= 0:
+        add("pgrowth", label, None, "was loss-making 3 yrs ago", "check", rule)
     else:
-        add("peg", "PEG ratio", round(peg, 2), f"{peg:.2f}{peg_note}",
-            "pass" if 0 < peg <= fc["max_peg"] else "fail", rule)
+        p2 = cagr(ni0, _g(raw, "net_income", 2), 2)
+        if p2 is None:
+            add("pgrowth", label, None, "no data", "check", rule)
+        else:
+            add("pgrowth", label, round(p2 * 100, 1), f"{p2*100:.1f}% (2Y)",
+                "pass" if p2 * 100 >= fc["min_profit_cagr_3y_pct"] else "fail", rule)
 
     # 6. Piotroski
     pf = piotroski(raw)

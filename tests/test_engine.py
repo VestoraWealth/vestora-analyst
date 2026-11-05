@@ -145,7 +145,7 @@ def test_evaluate_all_pass():
     f = fu.evaluate(_raw(), "Automobile and Auto Components", CFG, pledge=0.0)
     st = {c["key"]: c["status"] for c in f["checks"]}
     assert st == {"debt": "pass", "sales": "pass", "pledge": "pass", "profit": "pass",
-                  "peg": "pass", "piotroski": "pass", "mcap": "pass"}
+                  "pgrowth": "pass", "piotroski": "pass", "mcap": "pass"}
     assert f["verdict"] == "STRONG" and f["passed"] == 7
 
 
@@ -160,11 +160,14 @@ def test_evaluate_thresholds_and_special_cases():
     # loss-making
     h = fu.evaluate(_raw(net_income=[-50.0, 20.0, 10.0, 5.0], peg_info=None), "Healthcare", CFG, pledge=0.0)
     hs = {c["key"]: c["status"] for c in h["checks"]}
-    assert hs["profit"] == "fail" and hs["peg"] == "fail"
-    # PEG 1.6 fails, market cap below 10,000 Cr fails
-    k = fu.evaluate(_raw(peg_info=1.6, market_cap=9.0e10), "IT", CFG, pledge=0.0)
+    assert hs["profit"] == "fail" and hs["pgrowth"] == "fail"
+    # profit CAGR (110/100)^(1/3)-1 = 3.2% fails; market cap below 10,000 Cr fails
+    k = fu.evaluate(_raw(net_income=[110.0, 105.0, 102.0, 100.0], market_cap=9.0e10), "IT", CFG, pledge=0.0)
     ks = {c["key"]: c["status"] for c in k["checks"]}
-    assert ks["peg"] == "fail" and ks["mcap"] == "fail"
+    assert ks["pgrowth"] == "fail" and ks["mcap"] == "fail"
+    # turnaround from a loss 3 years ago can't be measured -> flagged to check
+    t = fu.evaluate(_raw(net_income=[200.0, 150.0, 80.0, -20.0]), "IT", CFG, pledge=0.0)
+    assert {c["key"]: c["status"] for c in t["checks"]}["pgrowth"] == "check"
 
 
 def test_pledge_payload_parsing():

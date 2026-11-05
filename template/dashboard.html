@@ -623,7 +623,7 @@ const DATA = "__VESTORA_DATA__";
   });
 
   /* ---------- fundamentals table ---------- */
-  const FC = [["debt","Debt / Equity"],["sales","Sales 3Y"],["pledge","Pledge"],["profit","Profitable"],["peg","PEG"],["piotroski","Piotroski"],["mcap","Market cap"]];
+  const FC = [["debt","Debt / Equity"],["sales","Sales 3Y"],["pledge","Pledge"],["profit","Profitable"],["pgrowth","Profit 3Y"],["piotroski","Piotroski"],["mcap","Market cap"]];
   const wl = D.watchlist || [];
   if (!wl.length) { $("fund").outerHTML = `<p class="empty">Nothing to check — the watchlist is empty today.</p>`; }
   else {
@@ -701,7 +701,7 @@ const DATA = "__VESTORA_DATA__";
     <ul>
       <li>Debt / equity below ${FU.max_debt_to_equity} (not applied to banks, NBFCs, insurers)</li>
       <li>Sales growth ${FU.min_sales_cagr_3y_pct}%+ a year over 3 years · promoter pledge 0% · profitable</li>
-      <li>PEG ${FU.max_peg} or lower · Piotroski ${FU.min_piotroski}+ of 9 · market cap above ₹${nf(FU.min_market_cap_cr)} Cr</li>
+      <li>Profit growth ${FU.min_profit_cagr_3y_pct}%+ a year over 3 years · Piotroski ${FU.min_piotroski}+ of 9 · market cap above ₹${nf(FU.min_market_cap_cr)} Cr</li>
     </ul>`;
 })();
 </script>

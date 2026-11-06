@@ -1,0 +1,632 @@
+{
+ "asof": "2026-11-06",
+ "regime": "THRUST",
+ "watchlist": [
+  "KOTAKBANK",
+  "ADANIPORTS",
+  "ETERNAL",
+  "TECHM",
+  "JSWSTEEL",
+  "HCLTECH",
+  "ICICIBANK"
+ ],
+ "prev_watchlist": null,
+ "constituents": [
+  "ADANIENT",
+  "ADANIPORTS",
+  "APOLLOHOSP",
+  "ASIANPAINT",
+  "AXISBANK",
+  "BSE",
+  "BAJAJ-AUTO",
+  "BAJFINANCE",
+  "BAJAJFINSV",
+  "BEL",
+  "BHARTIARTL",
+  "CIPLA",
+  "COALINDIA",
+  "DRREDDY",
+  "EICHERMOT",
+  "ETERNAL",
+  "GRASIM",
+  "HCLTECH",
+  "HDFCBANK",
+  "HDFCLIFE",
+  "HINDALCO",
+  "HINDUNILVR",
+  "ICICIBANK",
+  "ITC",
+  "INFY",
+  "INDIGO",
+  "JSWSTEEL",
+  "JIOFIN",
+  "KOTAKBANK",
+  "LT",
+  "M&M",
+  "MARUTI",
+  "MAXHEALTH",
+  "NTPC",
+  "NESTLEIND",
+  "ONGC",
+  "POWERGRID",
+  "RELIANCE",
+  "SBILIFE",
+  "SHRIRAMFIN",
+  "SBIN",
+  "SUNPHARMA",
+  "TCS",
+  "TATACONSUM",
+  "TMPV",
+  "TATASTEEL",
+  "TECHM",
+  "TITAN",
+  "TRENT",
+  "ULTRACEMCO"
+ ],
+ "fundamentals": {
+  "KOTAKBANK": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": null,
+     "display": "N/A (lender)",
+     "status": "na",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 14.1,
+     "display": "14.1%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.72,
+     "display": "0.72%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 19288.0,
+     "display": "₹19,288 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 8.9,
+     "display": "8.9%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 5,
+     "display": "5/7 (adj.)",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 477498.0,
+     "display": "₹4.77 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 3,
+   "failed": 3,
+   "to_check": 0,
+   "applicable": 6,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": true,
+    "Current ratio improving": null,
+    "No new shares issued": true,
+    "Gross margin improving": null,
+    "Asset turnover improving": false
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "ADANIPORTS": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 0.66,
+     "display": "0.66",
+     "status": "fail",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 22.9,
+     "display": "22.9%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.63,
+     "display": "0.63%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 12806.0,
+     "display": "₹12,806 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 34.1,
+     "display": "34.1%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 6,
+     "display": "6/9",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 446185.0,
+     "display": "₹4.46 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 5,
+   "failed": 2,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "PARTIAL",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": false,
+    "Current ratio improving": true,
+    "No new shares issued": false,
+    "Gross margin improving": true,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "ETERNAL": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 0.15,
+     "display": "0.15",
+     "status": "pass",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 97.7,
+     "display": "97.7%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.0,
+     "display": "0.00%",
+     "status": "pass",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 366.0,
+     "display": "₹366 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": null,
+     "display": "was loss-making 3 yrs ago",
+     "status": "check",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 4,
+     "display": "4/8 (adj.)",
+     "status": "fail",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 334562.0,
+     "display": "₹3.35 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 5,
+   "failed": 1,
+   "to_check": 1,
+   "applicable": 7,
+   "verdict": "PARTIAL",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": null,
+    "Current ratio improving": false,
+    "No new shares issued": false,
+    "Gross margin improving": false,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "TECHM": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 0.07,
+     "display": "0.07",
+     "status": "pass",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 2.2,
+     "display": "2.2%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.46,
+     "display": "0.46%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 4811.0,
+     "display": "₹4,811 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": -0.1,
+     "display": "-0.1%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 8,
+     "display": "8/8 (adj.)",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 179476.0,
+     "display": "₹1.79 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 4,
+   "failed": 3,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": true,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": null,
+    "Current ratio improving": true,
+    "No new shares issued": true,
+    "Gross margin improving": true,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "JSWSTEEL": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 1.19,
+     "display": "1.19",
+     "status": "fail",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 3.6,
+     "display": "3.6%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 7.86,
+     "display": "7.86%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 22316.0,
+     "display": "₹22,316 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 75.3,
+     "display": "75.3%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 9,
+     "display": "9/9",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 331265.0,
+     "display": "₹3.31 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 4,
+   "failed": 3,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": true,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": true,
+    "Current ratio improving": true,
+    "No new shares issued": true,
+    "Gross margin improving": true,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "HCLTECH": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 0.07,
+     "display": "0.07",
+     "status": "pass",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 8.7,
+     "display": "8.7%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.28,
+     "display": "0.28%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 16642.0,
+     "display": "₹16,642 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 3.9,
+     "display": "3.9%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 7,
+     "display": "7/9",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 389754.0,
+     "display": "₹3.90 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 4,
+   "failed": 3,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": true,
+    "Current ratio improving": true,
+    "No new shares issued": true,
+    "Gross margin improving": false,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  },
+  "ICICIBANK": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": null,
+     "display": "N/A (lender)",
+     "status": "na",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 18.1,
+     "display": "18.1%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 1.03,
+     "display": "1.03%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 54208.0,
+     "display": "₹54,208 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 16.8,
+     "display": "16.8%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 4,
+     "display": "4/7 (adj.)",
+     "status": "fail",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 1128250.0,
+     "display": "₹11.28 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 4,
+   "failed": 2,
+   "to_check": 0,
+   "applicable": 6,
+   "verdict": "PARTIAL",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": true,
+    "Current ratio improving": null,
+    "No new shares issued": false,
+    "Gross margin improving": null,
+    "Asset turnover improving": false
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-06"
+  }
+ },
+ "alerts_log": [
+  {
+   "date": "2026-11-06",
+   "type": "welcome",
+   "title": "Analyser started",
+   "text": "*VESTORA ANALYST* · 06 Nov 2026\n✅ Analyser is live. You'll get alerts here.\n\n🟢 Market mode: *BREADTH THRUST*\nNifty 50 above 50 DMA: *44/50 (88%)* ▲52 pts in 5 days\nAbove 200 DMA: 30/50 (60%)\nSwing score: *63/100*\nNifty: 25,030 (+2.01%), above 50 DMA\n\nStrong sectors: IT 4/4, Telecom 1/1, Cement & Materials 2/2\nWatchlist (7): KOTAKBANK, ADANIPORTS, ETERNAL, TECHM, JSWSTEEL, HCLTECH, ICICIBANK\n\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  }
+ ],
+ "first_seen": {
+  "KOTAKBANK": "2026-11-06",
+  "ADANIPORTS": "2026-11-06",
+  "ETERNAL": "2026-11-06",
+  "TECHM": "2026-11-06",
+  "JSWSTEEL": "2026-11-06",
+  "HCLTECH": "2026-11-06",
+  "ICICIBANK": "2026-11-06"
+ }
+}

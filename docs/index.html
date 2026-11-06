@@ -1,0 +1,708 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body><title>Vestora Analyst</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Nifty 50 market breadth, swing-timing mode, sector breadth and watchlist by Vestora Wealth.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: an analyst's desk in Vestora espresso & gold — verdict + breadth dial first, the year-long breadth tape across
+   the full width, then the sector board beside the watchlist, then fundamentals, every stock, and the alert log. */
+:root{
+  --bg:#1E1308; --surface:#281A0B; --surface-2:#33220F; --raise:#3C2913;
+  --line:rgba(212,175,55,.15); --line-2:rgba(248,243,233,.08);
+  --fg:#F8F3E9; --fg-2:#D6C8AE; --muted:#A08E70;
+  --gold:#D4AF37; --gold-hi:#F4E58C; --gold-lo:#B8860B; --gold-ink:#E2C25A;
+  --track:rgba(248,243,233,.09);
+  --best:#48A869; --good:#4A95D0; --neutral:#9C8F7A; --warn:#D27026; --bad:#CF4472;
+  --best-bg:rgba(72,168,105,.16); --good-bg:rgba(74,149,208,.15); --neutral-bg:rgba(156,143,122,.12);
+  --warn-bg:rgba(210,112,38,.17); --bad-bg:rgba(207,68,114,.16);
+  --shade:.20;
+  --f-display:"Poppins", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"DM Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-data:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r:14px; --r-sm:8px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#F8F3E9; --surface:#FFFDF8; --surface-2:#F2E9D7; --raise:#EADCC2;
+    --line:rgba(42,26,11,.12); --line-2:rgba(42,26,11,.07);
+    --fg:#2A1A0B; --fg-2:#5A4630; --muted:#857055;
+    --gold:#B8901E; --gold-hi:#D4AF37; --gold-lo:#8F6A0C; --gold-ink:#8A650B;
+    --track:rgba(42,26,11,.08);
+    --best:#23824A; --good:#1F72B8; --neutral:#7D705C; --warn:#C9690F; --bad:#AE2A60;
+    --best-bg:rgba(35,130,74,.12); --good-bg:rgba(31,114,184,.11); --neutral-bg:rgba(125,112,92,.10);
+    --warn-bg:rgba(201,105,15,.12); --bad-bg:rgba(174,42,96,.11);
+    --shade:.16;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F8F3E9; --surface:#FFFDF8; --surface-2:#F2E9D7; --raise:#EADCC2;
+  --line:rgba(42,26,11,.12); --line-2:rgba(42,26,11,.07);
+  --fg:#2A1A0B; --fg-2:#5A4630; --muted:#857055;
+  --gold:#B8901E; --gold-hi:#D4AF37; --gold-lo:#8F6A0C; --gold-ink:#8A650B;
+  --track:rgba(42,26,11,.08);
+  --best:#23824A; --good:#1F72B8; --neutral:#7D705C; --warn:#C9690F; --bad:#AE2A60;
+  --best-bg:rgba(35,130,74,.12); --good-bg:rgba(31,114,184,.11); --neutral-bg:rgba(125,112,92,.10);
+  --warn-bg:rgba(201,105,15,.12); --bad-bg:rgba(174,42,96,.11);
+  --shade:.16;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font-family:var(--f-body); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased}
+.app{max-width:1280px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:20px 48px; display:grid; gap:18px}
+h1,h2,h3{font-family:var(--f-display); margin:0; text-wrap:balance; letter-spacing:-.005em}
+h2{font-size:1.08rem; font-weight:600}
+.sub{color:var(--muted); font-size:.85rem; margin:2px 0 0}
+.num{font-family:var(--f-data); font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-display); font-size:.7rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.up{color:var(--best)} .down{color:var(--bad)} .flat{color:var(--muted)}
+button,input{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--gold); outline-offset:2px; border-radius:4px}
+
+/* ---------- top bar ---------- */
+.top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-bottom:16px; border-bottom:1px solid var(--line)}
+.brand{display:flex; align-items:center; gap:14px; min-width:0}
+.brand img{width:46px; height:46px; flex:none}
+.wordmark{font-family:var(--f-display); font-weight:700; font-size:clamp(1.25rem, 2.6vw, 1.6rem); letter-spacing:.16em; line-height:1.1;
+  background:linear-gradient(100deg, var(--gold-hi) 0%, var(--gold) 55%, var(--gold-lo) 100%); -webkit-background-clip:text; background-clip:text; color:transparent}
+.tagline{color:var(--muted); font-size:.82rem; margin-top:3px}
+.stamp{display:flex; gap:8px 18px; flex-wrap:wrap; align-items:center; color:var(--fg-2); font-size:.82rem}
+.stamp b{font-family:var(--f-data); font-weight:500; color:var(--fg)}
+.demo{border:1px dashed var(--warn); background:var(--warn-bg); color:var(--fg); border-radius:var(--r-sm); padding:10px 14px; font-size:.88rem}
+.demo b{color:var(--warn)}
+
+/* ---------- panels ---------- */
+.panel{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:18px; min-width:0}
+.panel-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+.grid2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start}
+@media (max-width: 920px){ .grid2{grid-template-columns:minmax(0,1fr)} }
+
+/* ---------- hero ---------- */
+.hero{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr) minmax(0,.85fr); gap:18px}
+@media (max-width: 1020px){ .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .verdict{grid-column:1 / -1} }
+@media (max-width: 620px){ .hero{grid-template-columns:minmax(0,1fr)} }
+.verdict{overflow:hidden; display:flex; flex-direction:column; gap:12px;
+  background:radial-gradient(120% 140% at 0% 0%, var(--tone-bg, var(--neutral-bg)) 0%, transparent 62%), var(--surface)}
+.pill{display:inline-flex; align-items:center; gap:7px; padding:4px 11px 4px 9px; border-radius:999px; font-size:.74rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-family:var(--f-display);
+  background:var(--tone-bg, var(--neutral-bg)); color:var(--tone, var(--neutral)); width:max-content; max-width:100%}
+.pill i{font-style:normal}
+.mode{font-family:var(--f-display); font-weight:700; font-size:clamp(1.7rem, 3.6vw, 2.55rem); line-height:1.08; letter-spacing:-.01em}
+.advice{color:var(--fg-2); max-width:56ch; margin:0}
+.pending{font-size:.82rem; color:var(--muted); margin:0}
+.score{margin-top:auto; display:grid; gap:6px}
+.score-row{display:flex; justify-content:space-between; align-items:baseline}
+.score-val{font-family:var(--f-data); font-size:1.15rem; font-weight:600}
+.score-val small{color:var(--muted); font-weight:400; font-size:.8rem}
+.track{height:8px; border-radius:99px; background:var(--track); overflow:hidden}
+.track > span{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, var(--gold-lo), var(--gold), var(--gold-hi))}
+.score-scale{display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted)}
+.tone-best{--tone:var(--best); --tone-bg:var(--best-bg)}
+.tone-good{--tone:var(--good); --tone-bg:var(--good-bg)}
+.tone-neutral{--tone:var(--neutral); --tone-bg:var(--neutral-bg)}
+.tone-warn{--tone:var(--warn); --tone-bg:var(--warn-bg)}
+.tone-bad{--tone:var(--bad); --tone-bg:var(--bad-bg)}
+
+.dial{display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center}
+.dial svg{width:100%; max-width:300px; height:auto; overflow:visible}
+.dial .big{font-family:var(--f-data); font-weight:600; font-size:2.4rem; line-height:1; fill:var(--fg)}
+.dial .cap{font-size:.82rem; fill:var(--muted); font-family:var(--f-body)}
+.dial .zl{font-size:9.5px; fill:var(--muted); font-family:var(--f-body); letter-spacing:.04em}
+.dial-foot{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; font-size:.84rem; color:var(--fg-2)}
+.dial-foot b{font-family:var(--f-data); font-weight:600}
+
+.kpis{display:grid; gap:0; align-content:start}
+.kpi{display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:11px 0; border-bottom:1px solid var(--line-2)}
+.kpi:first-child{padding-top:2px}
+.kpi:last-child{border-bottom:0}
+.kpi .k{color:var(--muted); font-size:.84rem}
+.kpi .v{font-family:var(--f-data); font-weight:600; font-size:1.02rem; text-align:right}
+.kpi .v small{display:block; font-weight:400; font-size:.76rem; color:var(--muted)}
+
+/* ---------- charts ---------- */
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px; background:var(--surface-2)}
+.seg button{border:0; background:transparent; padding:4px 12px; border-radius:999px; cursor:pointer; color:var(--fg-2); font-size:.8rem; font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--gold); color:#24170A}
+.legend{display:flex; gap:6px 16px; flex-wrap:wrap; font-size:.78rem; color:var(--fg-2); align-items:center}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.sw{width:14px; height:3px; border-radius:2px; display:inline-block}
+.sw.box{height:10px; width:10px; border-radius:3px}
+.chart{position:relative; width:100%}
+.chart svg{display:block; width:100%; height:auto; overflow:visible}
+.chart-title{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center; margin:6px 0 4px}
+.chart-title h3{font-size:.86rem; font-weight:600; color:var(--fg-2); font-family:var(--f-body)}
+.ax{font-family:var(--f-data); font-size:10.5px; fill:var(--muted)}
+.grid-l{stroke:var(--line-2); stroke-width:1}
+.ln-b50{fill:none; stroke:var(--gold); stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round}
+.ln-b200{fill:none; stroke:var(--fg-2); stroke-width:1.4; stroke-dasharray:4 3; opacity:.85}
+.ln-nifty{fill:none; stroke:var(--fg); stroke-width:1.7; stroke-linejoin:round}
+.zone-bad{fill:var(--bad); opacity:.10} .zone-best{fill:var(--best); opacity:.10} .zone-warn{fill:var(--warn); opacity:.12}
+.zone-lab{font-family:var(--f-body); font-size:10px; fill:var(--fg-2); letter-spacing:.06em; text-transform:uppercase; paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round}
+.ref{stroke:var(--muted); stroke-dasharray:2 4; stroke-width:1; opacity:.7}
+.sh-best{fill:var(--best)} .sh-good{fill:var(--good)} .sh-neutral{fill:var(--neutral)} .sh-warn{fill:var(--warn)} .sh-bad{fill:var(--bad)}
+.shade rect{opacity:var(--shade)}
+.xhair{stroke:var(--fg-2); stroke-width:1; opacity:.6}
+.dot-b50{fill:var(--gold); stroke:var(--surface); stroke-width:2}
+.dot-nifty{fill:var(--fg); stroke:var(--surface); stroke-width:2}
+.thrust{fill:var(--best)}
+.tip{position:absolute; pointer-events:none; z-index:5; background:var(--raise); color:var(--fg); border:1px solid var(--line); border-radius:10px; padding:9px 11px; font-size:.8rem; min-width:170px;
+  box-shadow:0 10px 28px rgba(0,0,0,.28); opacity:0; transition:opacity .12s}
+.tip.on{opacity:1}
+.tip .d{font-weight:600; margin-bottom:4px; font-family:var(--f-display); font-size:.8rem}
+.tip .r{display:flex; justify-content:space-between; gap:14px}
+.tip .r span:last-child{font-family:var(--f-data)}
+.tip .m{margin-top:6px; padding-top:6px; border-top:1px solid var(--line-2); font-weight:600}
+
+/* ---------- sectors ---------- */
+.sec-list{display:grid; gap:2px}
+.sec{display:grid; grid-template-columns:minmax(150px,1.2fr) minmax(90px,2fr) 54px 66px; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line-2)}
+.sec:last-child{border-bottom:0}
+.sec .nm{min-width:0}
+.sec .nm b{font-weight:600; font-size:.92rem; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sec .nm small{color:var(--muted); font-size:.76rem; white-space:nowrap}
+.bar{position:relative; height:12px; border-radius:6px; background:var(--track)}
+.bar > span{position:absolute; inset:0 auto 0 0; border-radius:6px; background:var(--muted); opacity:.55}
+.bar.good > span{background:linear-gradient(90deg, var(--gold-lo), var(--gold)); opacity:1}
+.bar i{position:absolute; top:-3px; bottom:-3px; width:0; border-left:1.5px dashed var(--fg-2); opacity:.55}
+.sec .pct{font-family:var(--f-data); font-size:.86rem; text-align:right}
+.sec .pct small{display:block; font-size:.72rem}
+.spark{width:66px; height:24px}
+.spark polyline{fill:none; stroke:var(--fg-2); stroke-width:1.4}
+.spark circle{fill:var(--gold)}
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:.7rem; font-weight:600; letter-spacing:.04em; padding:2px 8px; border-radius:999px; background:var(--tone-bg); color:var(--tone); white-space:nowrap}
+.chip::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+@media (max-width: 520px){
+  .sec{grid-template-columns:minmax(0,1fr) 54px; row-gap:6px}
+  .sec .bar{grid-column:1 / -1; grid-row:2}
+  .sec .spark{display:none}
+}
+
+/* ---------- watchlist ---------- */
+.wl-group{border-top:1px solid var(--line); padding-top:12px; margin-top:12px}
+.wl-group:first-of-type{border-top:0; padding-top:0; margin-top:0}
+.wl-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px}
+.wl-head h3{font-size:.95rem; font-weight:600}
+.wl-head span{font-size:.78rem; color:var(--muted)}
+.stock{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; padding:10px 12px; margin:0 -12px; border-radius:10px; cursor:pointer; border:0; background:transparent; width:calc(100% + 24px); text-align:left}
+.stock:hover{background:var(--surface-2)}
+.stock .sym{font-family:var(--f-data); font-weight:600; font-size:.95rem; letter-spacing:.02em}
+.stock .co{color:var(--muted); font-size:.8rem; margin-left:8px}
+.stock .px{font-family:var(--f-data); font-weight:600; text-align:right}
+.stock .stats{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:4px 14px; font-size:.8rem; color:var(--fg-2)}
+.stock .stats b{font-family:var(--f-data); font-weight:500; color:var(--fg)}
+.tag{font-size:.7rem; padding:1px 7px; border-radius:6px; border:1px solid var(--line); color:var(--fg-2)}
+.tag.fresh{border-color:var(--best); color:var(--best)}
+.tag.ext{border-color:var(--warn); color:var(--warn)}
+.fbadge{font-family:var(--f-data); font-size:.74rem; font-weight:600; padding:2px 8px; border-radius:6px; background:var(--tone-bg); color:var(--tone)}
+.fdetail{grid-column:1 / -1; display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:6px 14px; padding:10px 0 2px; font-size:.8rem}
+.fdetail > span{display:flex; justify-content:space-between; gap:8px; border-bottom:1px dashed var(--line-2); padding-bottom:4px; color:var(--fg-2)}
+.others{margin-top:14px; font-size:.8rem; color:var(--muted)}
+.others b{font-family:var(--f-data); color:var(--fg-2); font-weight:500}
+.empty{color:var(--muted); font-size:.9rem; padding:18px 0}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto; margin:0 -18px; padding:0 18px}
+table{border-collapse:collapse; width:100%; font-size:.84rem}
+th{font-family:var(--f-display); font-weight:600; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:right; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; vertical-align:bottom}
+th small{display:block; text-transform:none; letter-spacing:0; font-family:var(--f-data); font-weight:400; font-size:.7rem; color:var(--fg-2)}
+th:first-child, td:first-child{text-align:left; padding-left:0}
+td{padding:9px 10px; border-bottom:1px solid var(--line-2); text-align:right; white-space:nowrap; font-family:var(--f-data); font-variant-numeric:tabular-nums}
+td:first-child{font-family:var(--f-body)}
+td .s{font-family:var(--f-data); font-weight:600}
+td .n{display:block; color:var(--muted); font-size:.74rem; font-family:var(--f-body); max-width:180px; overflow:hidden; text-overflow:ellipsis}
+tr:hover td{background:var(--surface-2)}
+th[data-k]{cursor:pointer; user-select:none}
+th[data-k]:hover{color:var(--fg)}
+th[aria-sort="ascending"]::after{content:" ▲"} th[aria-sort="descending"]::after{content:" ▼"}
+.st{display:inline-flex; align-items:center; gap:6px; font-family:var(--f-data)}
+.st::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--tone)}
+.st.pass{--tone:var(--best)} .st.fail{--tone:var(--bad)} .st.check{--tone:var(--warn)} .st.na{--tone:var(--neutral); color:var(--muted)}
+.filters{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.more{margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:7px 16px; cursor:pointer; font-size:.84rem; color:var(--fg-2)}
+.more:hover{color:var(--fg); border-color:var(--gold)}
+.search{background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:6px 14px; min-width:0; width:200px; max-width:100%}
+.ab{font-family:var(--f-body); font-size:.74rem; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--tone-bg); color:var(--tone)}
+
+/* ---------- alerts & method ---------- */
+.alerts{display:grid; gap:0; max-height:520px; overflow:auto}
+.alert{border-bottom:1px solid var(--line-2)}
+.alert summary{display:grid; grid-template-columns:64px 12px minmax(0,1fr) auto; gap:10px; align-items:center; padding:10px 0; cursor:pointer; list-style:none}
+.alert summary::-webkit-details-marker{display:none}
+.alert .dt{font-family:var(--f-data); font-size:.78rem; color:var(--muted)}
+.alert .gl{width:9px; height:9px; border-radius:50%; background:var(--tone)}
+.alert .tt{font-size:.88rem; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.alert .sent{font-size:.7rem; color:var(--muted)}
+.alert .msg{white-space:pre-wrap; font-size:.82rem; color:var(--fg-2); background:var(--surface-2); border-radius:10px; padding:12px 14px; margin:0 0 12px; overflow-wrap:anywhere}
+.method dl{display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px 14px; margin:0; font-size:.86rem}
+.method dt{font-weight:600}
+.method dd{margin:0; color:var(--fg-2)}
+.method h3{font-size:.9rem; margin:18px 0 8px}
+.method ul{margin:0; padding-left:18px; color:var(--fg-2); font-size:.86rem; display:grid; gap:4px}
+footer{color:var(--muted); font-size:.78rem; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; padding-top:8px; border-top:1px solid var(--line)}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">
+      <img src="data:image/png;base64,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" alt="Vestora Wealth">
+      <div>
+        <div class="wordmark">VESTORA ANALYST</div>
+        <div class="tagline">Nifty 50 market breadth · swing-trading timing</div>
+      </div>
+    </div>
+    <div class="stamp" id="stamp"></div>
+  </header>
+
+  <div class="demo" id="demo" hidden><b>Preview with simulated prices.</b> Every number on this page is generated test data. Live Nifty 50 data replaces it on the first automatic run.</div>
+
+  <section class="hero" aria-label="Market summary">
+    <div class="panel verdict" id="verdict"></div>
+    <div class="panel dial" id="dial"></div>
+    <div class="panel kpis" id="kpis"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-breadth">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-breadth">When is it a good time to swing trade?</h2>
+        <p class="sub">Nifty 50 shaded by market mode, and the share of Nifty 50 stocks above their 50 and 200-day moving averages.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Chart range" id="range">
+        <button type="button" data-n="63" aria-pressed="false">3M</button>
+        <button type="button" data-n="126" aria-pressed="false">6M</button>
+        <button type="button" data-n="250" aria-pressed="true">1Y</button>
+      </div>
+    </div>
+    <div class="chart-title">
+      <h3>Nifty 50 · shaded by mode</h3>
+      <div class="legend">
+        <span><i class="sw box" style="background:var(--best)"></i>Best / thrust</span>
+        <span><i class="sw box" style="background:var(--good)"></i>Good / reversal</span>
+        <span><i class="sw box" style="background:var(--neutral)"></i>Neutral</span>
+        <span><i class="sw box" style="background:var(--warn)"></i>Caution</span>
+        <span><i class="sw box" style="background:var(--bad)"></i>Avoid / oversold</span>
+      </div>
+    </div>
+    <div class="chart" id="c-nifty"></div>
+    <div class="chart-title" style="margin-top:14px">
+      <h3>% of Nifty 50 stocks above moving average</h3>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--gold)"></i>Above 50 DMA</span>
+        <span><i class="sw" style="background:repeating-linear-gradient(90deg,var(--fg-2) 0 4px,transparent 4px 7px)"></i>Above 200 DMA</span>
+        <span><i class="sw box" style="background:var(--best); width:8px; height:8px; clip-path:polygon(50% 0,100% 100%,0 100%); border-radius:0"></i>Breadth thrust</span>
+      </div>
+    </div>
+    <div class="chart" id="c-breadth"></div>
+    <div class="tip" id="tip" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel" aria-labelledby="h-sec">
+      <div class="panel-head">
+        <div>
+          <h2 id="h-sec">Sector breadth</h2>
+          <p class="sub" id="sec-sub">Share of each sector's Nifty 50 stocks above the 50 DMA. Ranked by breadth and 1-month strength vs Nifty.</p>
+        </div>
+      </div>
+      <div class="sec-list" id="sectors"></div>
+    </div>
+    <div class="panel" aria-labelledby="h-wl">
+      <div class="panel-head">
+        <div>
+          <h2 id="h-wl">Vestora watchlist</h2>
+          <p class="sub">Best stocks in sectors with good breadth. Tap a stock for its fundamentals.</p>
+        </div>
+      </div>
+      <div id="watch"></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-fund">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-fund">Fundamental check</h2>
+        <p class="sub">Run automatically on every stock that enters the watchlist. Refreshed weekly.</p>
+      </div>
+    </div>
+    <div class="scroll"><table id="fund"></table></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-all">
+    <div class="panel-head">
+      <div>
+        <h2 id="h-all">All Nifty 50 stocks</h2>
+        <p class="sub" id="all-sub"></p>
+      </div>
+      <div class="filters">
+        <div class="seg" role="group" aria-label="Filter stocks" id="flt">
+          <button type="button" data-f="all" aria-pressed="true">All</button>
+          <button type="button" data-f="above" aria-pressed="false">Above 50 DMA</button>
+          <button type="button" data-f="below" aria-pressed="false">Below</button>
+          <button type="button" data-f="leaders" aria-pressed="false">Leaders</button>
+        </div>
+        <input class="search" id="q" type="search" placeholder="Search stock or sector" aria-label="Search stocks">
+      </div>
+    </div>
+    <div class="scroll"><table id="all"></table></div>
+    <button type="button" class="more" id="more" aria-expanded="false"></button>
+  </section>
+
+  <section class="grid2">
+    <div class="panel" aria-labelledby="h-alerts">
+      <div class="panel-head">
+        <div>
+          <h2 id="h-alerts">WhatsApp alert log</h2>
+          <p class="sub">Every alert the analyser has sent, newest first.</p>
+        </div>
+      </div>
+      <div class="alerts" id="alerts"></div>
+    </div>
+    <div class="panel method" aria-labelledby="h-method">
+      <div class="panel-head"><div><h2 id="h-method">How the analyser decides</h2></div></div>
+      <div id="method"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span id="src"></span>
+    <span>For research and education only. Not investment advice.</span>
+  </footer>
+</div>
+
+<script>
+const DATA = {"asof":"2026-11-06","market":{"b50":88.0,"above50":44,"valid50":50,"b200":60.0,"above200":30,"valid200":50,"d5":52.0,"b50_1m":18.0,"adv":46,"dec":4,"nifty":25030.35,"nifty_chg":2.01,"nifty_sma50":23248.02,"nifty_vs50":7.67,"nifty_above50":true,"nifty_sma_rising":false,"nifty_ret_1m":10.74,"nifty_ret_3m":1.6,"score":63.0,"regime":"THRUST","regime_label":"BREADTH THRUST","regime_tone":"best","advice":"Rare, broad-based surge in breadth — historically one of the strongest swing-buy windows. Buy leaders from strong sectors on small dips.","thrust_today":false,"regime_raw":"THRUST","regime_raw_label":"BREADTH THRUST","pending":false},"history":{"dates":["2025-11-04","2025-11-06","2025-11-07","2025-11-10","2025-11-11","2025-11-12","2025-11-13","2025-11-14","2025-11-17","2025-11-18","2025-11-19","2025-11-20","2025-11-21","2025-11-24","2025-11-25","2025-11-26","2025-11-27","2025-11-28","2025-12-01","2025-12-02","2025-12-03","2025-12-04","2025-12-05","2025-12-08","2025-12-09","2025-12-10","2025-12-11","2025-12-12","2025-12-15","2025-12-16","2025-12-17","2025-12-18","2025-12-19","2025-12-22","2025-12-23","2025-12-24","2025-12-26","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-02","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-12","2026-01-13","2026-01-14","2026-01-15","2026-01-16","2026-01-19","2026-01-20","2026-01-21","2026-01-22","2026-01-23","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13","2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-03-02","2026-03-04","2026-03-05","2026-03-06","2026-03-09","2026-03-10","2026-03-11","2026-03-12","2026-03-13","2026-03-16","2026-03-17","2026-03-18","2026-03-19","2026-03-20","2026-03-23","2026-03-24","2026-03-25","2026-03-27","2026-03-30","2026-04-01","2026-04-02","2026-04-06","2026-04-07","2026-04-08","2026-04-09","2026-04-10","2026-04-13","2026-04-15","2026-04-16","2026-04-17","2026-04-20","2026-04-21","2026-04-22","2026-04-23","2026-04-24","2026-04-27","2026-04-28","2026-04-29","2026-04-30","2026-05-04","2026-05-05","2026-05-06","2026-05-07","2026-05-08","2026-05-11","2026-05-12","2026-05-13","2026-05-14","2026-05-15","2026-05-18","2026-05-19","2026-05-20","2026-05-21","2026-05-22","2026-05-25","2026-05-26","2026-05-27","2026-05-29","2026-06-01","2026-06-02","2026-06-03","2026-06-04","2026-06-05","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-19","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-29","2026-06-30","2026-07-01","2026-07-02","2026-07-03","2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-10","2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-28","2026-09-29","2026-09-30","2026-10-01","2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-12","2026-10-13","2026-10-14","2026-10-15","2026-10-16","2026-10-19","2026-10-21","2026-10-22","2026-10-23","2026-10-26","2026-10-27","2026-10-28","2026-10-29","2026-10-30","2026-11-02","2026-11-03","2026-11-04","2026-11-05","2026-11-06"],"b50":[60.0,52.0,54.0,56.0,58.0,62.0,60.0,60.0,64.0,56.0,56.0,68.0,54.0,54.0,54.0,64.0,66.0,66.0,68.0,64.0,52.0,54.0,64.0,52.0,54.0,50.0,54.0,56.0,50.0,50.0,44.0,46.0,50.0,52.0,54.0,50.0,48.0,44.0,48.0,56.0,52.0,62.0,68.0,68.0,66.0,52.0,48.0,56.0,56.0,52.0,50.0,48.0,46.0,38.0,36.0,42.0,36.0,46.0,42.0,38.0,38.0,38.0,54.0,56.0,52.0,52.0,58.0,62.0,66.0,64.0,54.0,60.0,58.0,64.0,52.0,56.0,62.0,64.0,64.0,64.0,46.0,44.0,32.0,38.0,32.0,24.0,34.0,22.0,22.0,18.0,16.0,18.0,18.0,14.0,14.0,10.0,14.0,16.0,14.0,12.0,10.0,8.0,12.0,16.0,28.0,30.0,38.0,34.0,50.0,52.0,58.0,60.0,70.0,60.0,58.0,54.0,58.0,56.0,64.0,60.0,66.0,62.0,76.0,78.0,76.0,64.0,44.0,42.0,60.0,56.0,58.0,60.0,60.0,60.0,66.0,80.0,74.0,66.0,56.0,48.0,50.0,46.0,46.0,44.0,38.0,42.0,42.0,38.0,46.0,60.0,60.0,60.0,66.0,58.0,64.0,52.0,52.0,50.0,46.0,48.0,56.0,58.0,60.0,60.0,64.0,54.0,52.0,58.0,58.0,56.0,52.0,56.0,64.0,62.0,58.0,54.0,52.0,46.0,54.0,50.0,60.0,60.0,60.0,70.0,68.0,68.0,68.0,66.0,66.0,64.0,60.0,60.0,60.0,58.0,54.0,52.0,54.0,50.0,46.0,52.0,44.0,46.0,46.0,48.0,34.0,34.0,30.0,34.0,24.0,24.0,24.0,22.0,18.0,8.0,8.0,14.0,16.0,18.0,18.0,24.0,18.0,16.0,12.0,12.0,10.0,8.0,10.0,16.0,18.0,8.0,14.0,14.0,18.0,22.0,28.0,32.0,22.0,18.0,18.0,16.0,24.0,24.0,26.0,30.0,36.0,48.0,54.0,62.0,82.0,88.0],"b200":[76.0,74.0,74.0,72.0,76.0,80.0,82.0,82.0,82.0,80.0,84.0,84.0,82.0,78.0,76.0,82.0,84.0,84.0,82.0,80.0,80.0,80.0,76.0,74.0,72.0,72.0,74.0,74.0,72.0,70.0,70.0,72.0,74.0,74.0,72.0,72.0,72.0,70.0,66.0,70.0,76.0,80.0,78.0,82.0,76.0,70.0,66.0,70.0,70.0,66.0,66.0,64.0,64.0,54.0,54.0,60.0,56.0,56.0,54.0,52.0,54.0,52.0,62.0,66.0,58.0,68.0,70.0,72.0,72.0,70.0,66.0,64.0,64.0,64.0,60.0,60.0,62.0,60.0,60.0,62.0,54.0,48.0,42.0,46.0,44.0,42.0,42.0,42.0,38.0,30.0,36.0,38.0,38.0,30.0,32.0,24.0,28.0,36.0,30.0,22.0,28.0,26.0,28.0,30.0,36.0,40.0,40.0,38.0,42.0,42.0,42.0,42.0,44.0,44.0,46.0,42.0,46.0,48.0,48.0,48.0,50.0,50.0,54.0,56.0,52.0,50.0,46.0,48.0,50.0,50.0,46.0,46.0,44.0,48.0,46.0,50.0,50.0,50.0,46.0,48.0,46.0,48.0,48.0,46.0,46.0,46.0,42.0,42.0,44.0,42.0,46.0,46.0,48.0,50.0,56.0,50.0,54.0,54.0,54.0,52.0,52.0,56.0,56.0,58.0,54.0,50.0,50.0,52.0,54.0,52.0,48.0,48.0,48.0,50.0,52.0,50.0,48.0,50.0,50.0,50.0,50.0,52.0,56.0,58.0,58.0,56.0,58.0,54.0,56.0,50.0,52.0,52.0,52.0,52.0,50.0,48.0,52.0,52.0,52.0,52.0,52.0,52.0,52.0,48.0,44.0,42.0,44.0,42.0,46.0,42.0,42.0,42.0,42.0,34.0,34.0,36.0,38.0,38.0,40.0,42.0,34.0,36.0,30.0,30.0,26.0,18.0,20.0,22.0,16.0,16.0,18.0,12.0,26.0,22.0,24.0,30.0,28.0,20.0,18.0,16.0,22.0,26.0,30.0,30.0,34.0,40.0,44.0,46.0,52.0,60.0],"nifty":[25597.7,25509.7,25492.3,25574.3,25694.9,25875.8,25879.2,25910.1,26013.4,25910.1,26052.7,26192.2,26068.2,25959.5,25884.8,26205.3,26215.6,26202.9,26175.8,26032.2,25986.0,26033.8,26186.4,25960.6,25839.7,25758.0,25898.6,26046.9,26027.3,25860.1,25818.6,25815.6,25966.4,26172.4,26177.2,26142.1,26042.3,25942.1,25938.8,26129.6,26146.6,26328.6,26250.3,26178.7,26140.8,25876.8,25683.3,25790.2,25732.3,25665.6,25665.6,25694.3,25585.5,25232.5,25157.5,25289.9,25048.7,25175.4,25342.8,25418.9,25320.7,25088.4,25727.6,25776.0,25642.8,25693.7,25867.3,25935.2,25953.8,25807.2,25471.1,25682.8,25725.4,25819.3,25454.3,25571.2,25713.0,25424.7,25482.5,25496.6,25178.7,24865.7,24480.5,24765.9,24450.4,24028.1,24261.6,23866.8,23639.2,23151.1,23408.8,23581.2,23777.8,23002.2,23114.5,22512.7,22912.4,23306.4,22819.6,22331.4,22679.4,22713.1,22968.2,23123.7,23997.3,23775.1,24050.6,23842.7,24231.3,24196.8,24353.6,24364.8,24576.6,24378.1,24173.1,23897.9,24092.7,23995.7,24177.7,23997.6,24119.3,24032.8,24330.9,24326.7,24176.2,23815.8,23379.6,23412.6,23689.6,23643.5,23649.9,23618.0,23659.0,23654.7,23719.3,24031.7,23913.7,23907.2,23547.8,23382.6,23483.6,23405.6,23416.6,23366.7,23123.0,23242.1,23214.9,23161.6,23622.9,23853.9,23989.2,24085.7,24168.0,24013.1,24102.9,23824.1,24021.7,24056.0,23946.2,23865.8,24005.8,24175.7,24270.8,24430.3,24398.7,23882.1,23962.8,24206.9,24211.0,24052.1,24078.5,24072.8,24334.3,24238.5,24187.7,23996.2,23869.6,23767.4,23995.9,23985.3,24250.2,24317.2,24383.6,24774.3,24614.9,24624.7,24636.0,24570.7,24583.8,24471.7,24435.9,24395.8,24366.0,24287.7,24154.9,24078.3,24231.8,24252.0,24219.1,24334.6,24207.8,24090.8,24175.7,24080.4,24055.8,23914.4,23873.4,23897.7,23779.2,23635.1,23431.5,23477.8,23398.1,23118.6,23217.6,23270.6,23346.4,23414.3,23329.0,23446.8,23063.1,23140.5,22780.2,22716.2,22620.4,22421.9,22555.8,22776.1,22603.1,22231.8,22520.4,22363.3,22721.9,22622.7,22997.3,23146.2,22888.9,22811.3,22687.7,22600.0,22753.2,22749.8,22698.8,22936.8,23053.1,23440.8,23810.8,23960.6,24536.6,25030.3],"regime":["FADING","FADING","FADING","FADING","FADING","FADING","BEST","BEST","BEST","BEST","BEST","BEST","BEST","FADING","FADING","FADING","BEST","BEST","BEST","BEST","BEST","FADING","FADING","FADING","FADING","FADING","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","GOOD","GOOD","GOOD","NEUTRAL","NEUTRAL","NEUTRAL","GOOD","GOOD","BEST","BEST","BEST","BEST","NEUTRAL","NEUTRAL","FADING","FADING","FADING","NEUTRAL","NEUTRAL","NEUTRAL","AVOID","AVOID","AVOID","AVOID","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","GOOD","GOOD","GOOD","GOOD","GOOD","BEST","BEST","BEST","GOOD","GOOD","GOOD","GOOD","GOOD","GOOD","GOOD","GOOD","GOOD","GOOD","NEUTRAL","NEUTRAL","AVOID","AVOID","AVOID","AVOID","AVOID","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","GOOD","GOOD","THRUST","THRUST","THRUST","THRUST","THRUST","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","BEST","BEST","BEST","NEUTRAL","NEUTRAL","NEUTRAL","FADING","FADING","FADING","GOOD","GOOD","GOOD","BEST","BEST","BEST","BEST","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","BEST","BEST","BEST","BEST","BEST","BEST","FADING","FADING","FADING","NEUTRAL","NEUTRAL","GOOD","GOOD","BEST","BEST","BEST","BEST","BEST","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","BEST","BEST","GOOD","GOOD","NEUTRAL","NEUTRAL","FADING","FADING","BEST","BEST","BEST","BEST","BEST","BEST","BEST","BEST","BEST","BEST","FADING","FADING","FADING","FADING","FADING","FADING","FADING","FADING","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","AVOID","AVOID","AVOID","AVOID","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","EARLY_REVERSAL","EARLY_REVERSAL","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","NEUTRAL","NEUTRAL","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","OVERSOLD","NEUTRAL","NEUTRAL","NEUTRAL","NEUTRAL","THRUST","THRUST","THRUST"],"tone":["warn","warn","warn","warn","warn","warn","best","best","best","best","best","best","best","warn","warn","warn","best","best","best","best","best","warn","warn","warn","warn","warn","neutral","neutral","neutral","neutral","neutral","neutral","neutral","neutral","good","good","good","neutral","neutral","neutral","good","good","best","best","best","best","neutral","neutral","warn","warn","warn","neutral","neutral","neutral","bad","bad","bad","bad","neutral","neutral","neutral","neutral","neutral","good","good","good","good","good","best","best","best","good","good","good","good","good","good","good","good","good","good","neutral","neutral","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","neutral","neutral","neutral","neutral","good","good","best","best","best","best","best","neutral","neutral","neutral","neutral","neutral","neutral","neutral","best","best","best","neutral","neutral","neutral","warn","warn","warn","good","good","good","best","best","best","best","neutral","neutral","neutral","neutral","neutral","neutral","neutral","neutral","neutral","neutral","neutral","best","best","best","best","best","best","warn","warn","warn","neutral","neutral","good","good","best","best","best","best","best","neutral","neutral","neutral","neutral","neutral","best","best","good","good","neutral","neutral","warn","warn","best","best","best","best","best","best","best","best","best","best","warn","warn","warn","warn","warn","warn","warn","warn","neutral","neutral","neutral","neutral","neutral","neutral","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","good","good","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","bad","neutral","neutral","bad","bad","bad","bad","bad","bad","neutral","neutral","neutral","neutral","best","best","best"],"thrust":["2026-04-20","2026-11-04"]},"sectors":[{"name":"Information Technology","short":"IT","n":4,"above":4,"b50":100.0,"b50_1w":100.0,"b50_1m":0.0,"b200":100.0,"ret_1m":22.24,"rs_1m":11.5,"score":98.6,"good":true,"hold":true,"status":"Leading","spark":[100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,25.0,25.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,50.0,75.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0],"members":["TECHM","HCLTECH","TCS","INFY"],"rank":1},{"name":"Telecommunication","short":"Telecom","n":1,"above":1,"b50":100.0,"b50_1w":100.0,"b50_1m":0.0,"b200":100.0,"ret_1m":14.9,"rs_1m":4.16,"score":84.7,"good":true,"hold":true,"status":"Leading","spark":[100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0],"members":["BHARTIARTL"],"rank":2},{"name":"Construction Materials","short":"Cement & Materials","n":2,"above":2,"b50":100.0,"b50_1w":0.0,"b50_1m":0.0,"b200":100.0,"ret_1m":13.64,"rs_1m":2.9,"score":83.4,"good":true,"hold":true,"status":"Leading","spark":[100.0,100.0,100.0,100.0,100.0,50.0,100.0,100.0,50.0,50.0,100.0,100.0,100.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,50.0,50.0,50.0,50.0,0.0,50.0,50.0,100.0,100.0,100.0],"members":["ULTRACEMCO","GRASIM"],"rank":3},{"name":"Consumer Durables","short":"Consumer Durables","n":2,"above":2,"b50":100.0,"b50_1w":0.0,"b50_1m":0.0,"b200":100.0,"ret_1m":10.91,"rs_1m":0.17,"score":77.9,"good":true,"hold":true,"status":"Leading","spark":[100.0,100.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,50.0,50.0,100.0,100.0],"members":["TITAN","ASIANPAINT"],"rank":4},{"name":"Construction","short":"Construction","n":1,"above":1,"b50":100.0,"b50_1w":100.0,"b50_1m":0.0,"b200":100.0,"ret_1m":11.24,"rs_1m":0.51,"score":77.4,"good":true,"hold":true,"status":"Leading","spark":[100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,100.0,100.0,100.0,100.0,100.0],"members":["LT"],"rank":5},{"name":"Services","short":"Services","n":2,"above":2,"b50":100.0,"b50_1w":50.0,"b50_1m":50.0,"b200":100.0,"ret_1m":10.2,"rs_1m":-0.54,"score":76.5,"good":true,"hold":true,"status":"Strong","spark":[50.0,50.0,50.0,50.0,50.0,50.0,0.0,0.0,0.0,0.0,50.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,50.0,50.0,50.0,0.0,0.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,0.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,0.0,50.0,50.0,50.0,50.0,50.0,100.0,100.0,100.0,100.0,100.0],"members":["ADANIPORTS","INDIGO"],"rank":6},{"name":"Consumer Services","short":"Consumer Services","n":2,"above":2,"b50":100.0,"b50_1w":100.0,"b50_1m":100.0,"b200":100.0,"ret_1m":8.62,"rs_1m":-2.12,"score":73.4,"good":true,"hold":true,"status":"Strong","spark":[50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,0.0,50.0,100.0,100.0,50.0,100.0,100.0,50.0,50.0,50.0,100.0,50.0,0.0,0.0,0.0,50.0,50.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0],"members":["ETERNAL","TRENT"],"rank":7},{"name":"Financial Services","short":"Financials","n":12,"above":11,"b50":91.7,"b50_1w":25.0,"b50_1m":33.3,"b200":58.3,"ret_1m":8.26,"rs_1m":-2.48,"score":69.9,"good":true,"hold":true,"status":"Strong","spark":[67.0,58.0,58.0,58.0,50.0,50.0,58.0,58.0,42.0,50.0,50.0,50.0,50.0,58.0,25.0,25.0,25.0,33.0,17.0,8.0,8.0,8.0,8.0,8.0,8.0,17.0,25.0,25.0,25.0,25.0,8.0,17.0,0.0,8.0,8.0,8.0,8.0,25.0,33.0,25.0,25.0,25.0,33.0,33.0,50.0,50.0,25.0,17.0,17.0,17.0,25.0,25.0,17.0,25.0,25.0,25.0,33.0,42.0,92.0,92.0],"members":["KOTAKBANK","ICICIBANK","AXISBANK","BSE","HDFCBANK","HDFCLIFE","BAJFINANCE","SBILIFE","SBIN","BAJAJFINSV","SHRIRAMFIN","JIOFIN"],"rank":8},{"name":"Automobile and Auto Components","short":"Auto","n":5,"above":4,"b50":80.0,"b50_1w":0.0,"b50_1m":0.0,"b200":60.0,"ret_1m":10.48,"rs_1m":-0.26,"score":68.3,"good":true,"hold":true,"status":"Strong","spark":[80.0,80.0,80.0,80.0,80.0,80.0,80.0,60.0,60.0,60.0,60.0,60.0,60.0,60.0,40.0,40.0,20.0,20.0,20.0,40.0,20.0,20.0,20.0,20.0,20.0,20.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,20.0,20.0,80.0,80.0],"members":["EICHERMOT","M&M","BAJAJ-AUTO","MARUTI","TMPV"],"rank":9},{"name":"Capital Goods","short":"Capital Goods","n":1,"above":1,"b50":100.0,"b50_1w":0.0,"b50_1m":0.0,"b200":0.0,"ret_1m":4.68,"rs_1m":-6.06,"score":64.3,"good":true,"hold":true,"status":"Strong","spark":[0.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,0.0,100.0,100.0,100.0,100.0,0.0,100.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,100.0,100.0],"members":["BEL"],"rank":10},{"name":"Power","short":"Power","n":2,"above":2,"b50":100.0,"b50_1w":50.0,"b50_1m":0.0,"b200":0.0,"ret_1m":3.5,"rs_1m":-7.24,"score":63.1,"good":true,"hold":true,"status":"Strong","spark":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,50.0,100.0,50.0,100.0,50.0,100.0],"members":["POWERGRID","NTPC"],"rank":11},{"name":"Healthcare","short":"Healthcare","n":5,"above":4,"b50":80.0,"b50_1w":60.0,"b50_1m":20.0,"b200":80.0,"ret_1m":6.87,"rs_1m":-3.87,"score":61.1,"good":true,"hold":true,"status":"Strong","spark":[40.0,40.0,60.0,40.0,20.0,20.0,20.0,0.0,20.0,40.0,0.0,20.0,20.0,40.0,20.0,20.0,0.0,0.0,0.0,20.0,20.0,20.0,20.0,0.0,0.0,0.0,60.0,60.0,60.0,60.0,60.0,40.0,40.0,20.0,20.0,20.0,20.0,20.0,20.0,0.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,60.0,60.0,60.0,60.0,60.0,80.0],"members":["DRREDDY","CIPLA","APOLLOHOSP","SUNPHARMA","MAXHEALTH"],"rank":12},{"name":"Fast Moving Consumer Goods","short":"FMCG","n":4,"above":3,"b50":75.0,"b50_1w":50.0,"b50_1m":0.0,"b200":0.0,"ret_1m":5.67,"rs_1m":-5.06,"score":56.4,"good":true,"hold":true,"status":"Strong","spark":[25.0,25.0,25.0,25.0,25.0,25.0,25.0,25.0,25.0,25.0,0.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,25.0,50.0,50.0,50.0,75.0,75.0,75.0,75.0],"members":["TATACONSUM","ITC","HINDUNILVR","NESTLEIND"],"rank":13},{"name":"Metals & Mining","short":"Metals","n":4,"above":3,"b50":75.0,"b50_1w":0.0,"b50_1m":0.0,"b200":50.0,"ret_1m":5.43,"rs_1m":-5.31,"score":55.9,"good":true,"hold":true,"status":"Strong","spark":[50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,75.0,75.0,75.0,75.0,50.0,50.0,50.0,50.0,75.0,50.0,50.0,100.0,75.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,75.0,25.0,25.0,25.0,25.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,25.0,25.0,25.0,50.0,75.0],"members":["JSWSTEEL","TATASTEEL","HINDALCO","ADANIENT"],"rank":14},{"name":"Oil Gas & Consumable Fuels","short":"Oil & Gas","n":3,"above":2,"b50":66.7,"b50_1w":0.0,"b50_1m":33.3,"b200":0.0,"ret_1m":4.25,"rs_1m":-6.49,"score":50.2,"good":true,"hold":true,"status":"Strong","spark":[33.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,0.0,0.0,0.0,0.0,33.0,67.0,33.0,67.0,67.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,0.0,33.0,33.0,33.0,67.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,33.0,0.0,0.0,0.0,0.0,33.0,33.0,33.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,67.0,67.0,67.0,67.0,67.0],"members":["COALINDIA","RELIANCE","ONGC"],"rank":15}],"stocks":[{"symbol":"ADANIENT","name":"Adani Enterprises Ltd.","sector":"Metals & Mining","sector_short":"Metals","close":2745.8,"chg_1d":0.46,"sma50":2812.28,"sma200":2616.94,"vs50":-2.36,"vs200":4.92,"slope50":-2.78,"ret_1m":0.1,"ret_3m":-9.26,"rs_3m":-10.86,"off_high":-14.52,"above50":false,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":23.5,"in_watchlist":false},{"symbol":"ADANIPORTS","name":"Adani Ports and Special Economic Zone Ltd.","sector":"Services","sector_short":"Services","close":1936.6,"chg_1d":2.76,"sma50":1763.25,"sma200":1661.99,"vs50":9.83,"vs200":16.52,"slope50":1.84,"ret_1m":10.66,"ret_3m":14.25,"rs_3m":12.65,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":false,"fresh_cross":false,"score":94.3,"in_watchlist":true},{"symbol":"APOLLOHOSP","name":"Apollo Hospitals Enterprise Ltd.","sector":"Healthcare","sector_short":"Healthcare","close":8446.0,"chg_1d":0.9,"sma50":8401.71,"sma200":8117.86,"vs50":0.53,"vs200":4.04,"slope50":-1.12,"ret_1m":6.68,"ret_3m":-5.78,"rs_3m":-7.38,"off_high":-6.87,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":45.2,"in_watchlist":false},{"symbol":"ASIANPAINT","name":"Asian Paints Ltd.","sector":"Consumer Durables","sector_short":"Consumer Durables","close":2546.0,"chg_1d":0.88,"sma50":2419.59,"sma200":2495.38,"vs50":5.22,"vs200":2.03,"slope50":-2.33,"ret_1m":7.58,"ret_3m":-7.37,"rs_3m":-8.97,"off_high":-13.28,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":29.8,"in_watchlist":false},{"symbol":"AXISBANK","name":"Axis Bank Ltd.","sector":"Financial Services","sector_short":"Financials","close":1322.9,"chg_1d":3.35,"sma50":1243.21,"sma200":1281.96,"vs50":6.41,"vs200":3.19,"slope50":0.04,"ret_1m":6.47,"ret_3m":5.33,"rs_3m":3.73,"off_high":-5.64,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":75.9,"in_watchlist":false},{"symbol":"BSE","name":"BSE Ltd.","sector":"Financial Services","sector_short":"Financials","close":3800.0,"chg_1d":0.26,"sma50":3337.23,"sma200":3386.03,"vs50":13.87,"vs200":12.23,"slope50":1.23,"ret_1m":13.23,"ret_3m":10.63,"rs_3m":9.03,"off_high":-13.47,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":true,"fresh_cross":false,"score":67.6,"in_watchlist":false},{"symbol":"BAJAJ-AUTO","name":"Bajaj Auto Ltd.","sector":"Automobile and Auto Components","sector_short":"Auto","close":10900.0,"chg_1d":1.32,"sma50":10925.38,"sma200":10257.95,"vs50":-0.23,"vs200":6.26,"slope50":-2.21,"ret_1m":10.28,"ret_3m":-6.2,"rs_3m":-7.8,"off_high":-11.82,"above50":false,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":false,"score":35.0,"in_watchlist":false},{"symbol":"BAJFINANCE","name":"Bajaj Finance Ltd.","sector":"Financial Services","sector_short":"Financials","close":1087.75,"chg_1d":1.66,"sma50":997.28,"sma200":971.02,"vs50":9.07,"vs200":12.02,"slope50":-2.32,"ret_1m":12.85,"ret_3m":-4.98,"rs_3m":-6.58,"off_high":-6.13,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":40.2,"in_watchlist":false},{"symbol":"BAJAJFINSV","name":"Bajaj Finserv Ltd.","sector":"Financial Services","sector_short":"Financials","close":1864.7,"chg_1d":1.62,"sma50":1806.28,"sma200":1849.26,"vs50":3.23,"vs200":0.83,"slope50":-3.15,"ret_1m":6.96,"ret_3m":-10.61,"rs_3m":-12.21,"off_high":-11.9,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":25.4,"in_watchlist":false},{"symbol":"BEL","name":"Bharat Electronics Ltd.","sector":"Capital Goods","sector_short":"Capital Goods","close":396.0,"chg_1d":0.23,"sma50":388.39,"sma200":414.15,"vs50":1.96,"vs200":-4.38,"slope50":-1.65,"ret_1m":4.68,"ret_3m":-0.67,"rs_3m":-2.27,"off_high":-15.35,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":43.7,"in_watchlist":false},{"symbol":"BHARTIARTL","name":"Bharti Airtel Ltd.","sector":"Telecommunication","sector_short":"Telecom","close":2107.2,"chg_1d":2.45,"sma50":1868.15,"sma200":1874.85,"vs50":12.8,"vs200":12.39,"slope50":0.65,"ret_1m":14.9,"ret_3m":8.17,"rs_3m":6.57,"off_high":-1.34,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":true,"fresh_cross":false,"score":75.5,"in_watchlist":false},{"symbol":"CIPLA","name":"Cipla Ltd.","sector":"Healthcare","sector_short":"Healthcare","close":1411.0,"chg_1d":0.49,"sma50":1367.44,"sma200":1357.95,"vs50":3.19,"vs200":3.91,"slope50":-0.84,"ret_1m":6.31,"ret_3m":-4.47,"rs_3m":-6.07,"off_high":-7.25,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":false,"score":48.2,"in_watchlist":false},{"symbol":"COALINDIA","name":"Coal India Ltd.","sector":"Oil Gas & Consumable Fuels","sector_short":"Oil & Gas","close":400.0,"chg_1d":1.45,"sma50":401.77,"sma200":413.58,"vs50":-0.44,"vs200":-3.28,"slope50":0.04,"ret_1m":-1.01,"ret_3m":-0.02,"rs_3m":-1.62,"off_high":-12.58,"above50":false,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":62.9,"in_watchlist":false},{"symbol":"DRREDDY","name":"Dr. Reddy's Laboratories Ltd.","sector":"Healthcare","sector_short":"Healthcare","close":1373.0,"chg_1d":0.51,"sma50":1224.27,"sma200":1244.67,"vs50":12.15,"vs200":10.31,"slope50":2.67,"ret_1m":14.06,"ret_3m":17.25,"rs_3m":15.65,"off_high":-0.07,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":true,"fresh_cross":false,"score":85.0,"in_watchlist":false},{"symbol":"EICHERMOT","name":"Eicher Motors Ltd.","sector":"Automobile and Auto Components","sector_short":"Auto","close":7669.5,"chg_1d":-0.56,"sma50":7398.7,"sma200":7344.68,"vs50":3.66,"vs200":4.42,"slope50":-1.84,"ret_1m":10.19,"ret_3m":-3.74,"rs_3m":-5.34,"off_high":-5.37,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":48.9,"in_watchlist":false},{"symbol":"ETERNAL","name":"Eternal Ltd.","sector":"Consumer Services","sector_short":"Consumer Services","close":363.15,"chg_1d":1.35,"sma50":327.88,"sma200":282.08,"vs50":10.76,"vs200":28.74,"slope50":1.27,"ret_1m":10.72,"ret_3m":14.83,"rs_3m":13.23,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":false,"fresh_cross":false,"score":93.7,"in_watchlist":true},{"symbol":"GRASIM","name":"Grasim Industries Ltd.","sector":"Construction Materials","sector_short":"Cement & Materials","close":3227.0,"chg_1d":-0.02,"sma50":3096.69,"sma200":2985.64,"vs50":4.21,"vs200":8.08,"slope50":-1.52,"ret_1m":10.47,"ret_3m":0.53,"rs_3m":-1.07,"off_high":-4.54,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":61.8,"in_watchlist":false},{"symbol":"HCLTECH","name":"HCL Technologies Ltd.","sector":"Information Technology","sector_short":"IT","close":1440.0,"chg_1d":0.66,"sma50":1301.11,"sma200":1292.02,"vs50":10.67,"vs200":11.45,"slope50":1.61,"ret_1m":22.6,"ret_3m":8.83,"rs_3m":7.22,"off_high":-13.52,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":false,"fresh_cross":false,"score":77.1,"in_watchlist":true},{"symbol":"HDFCBANK","name":"HDFC Bank Ltd.","sector":"Financial Services","sector_short":"Financials","close":788.25,"chg_1d":3.72,"sma50":713.7,"sma200":777.72,"vs50":10.45,"vs200":1.35,"slope50":-0.34,"ret_1m":12.17,"ret_3m":7.35,"rs_3m":5.75,"off_high":-20.63,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":60.0,"in_watchlist":false},{"symbol":"HDFCLIFE","name":"HDFC Life Insurance Company Ltd.","sector":"Financial Services","sector_short":"Financials","close":565.3,"chg_1d":3.95,"sma50":537.79,"sma200":594.87,"vs50":5.11,"vs200":-4.97,"slope50":-0.54,"ret_1m":3.53,"ret_3m":4.2,"rs_3m":2.6,"off_high":-27.96,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":52.6,"in_watchlist":false},{"symbol":"HINDALCO","name":"Hindalco Industries Ltd.","sector":"Metals & Mining","sector_short":"Metals","close":958.4,"chg_1d":2.19,"sma50":950.43,"sma200":977.74,"vs50":0.84,"vs200":-1.98,"slope50":-2.78,"ret_1m":5.22,"ret_3m":-6.68,"rs_3m":-8.28,"off_high":-16.2,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":23.7,"in_watchlist":false},{"symbol":"HINDUNILVR","name":"Hindustan Unilever Ltd.","sector":"Fast Moving Consumer Goods","sector_short":"FMCG","close":1998.4,"chg_1d":0.83,"sma50":1912.93,"sma200":2120.45,"vs50":4.47,"vs200":-5.76,"slope50":-1.49,"ret_1m":7.13,"ret_3m":-3.9,"rs_3m":-5.5,"off_high":-18.53,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":34.4,"in_watchlist":false},{"symbol":"ICICIBANK","name":"ICICI Bank Ltd.","sector":"Financial Services","sector_short":"Financials","close":1571.2,"chg_1d":4.75,"sma50":1382.7,"sma200":1348.44,"vs50":13.63,"vs200":16.52,"slope50":0.15,"ret_1m":15.74,"ret_3m":7.8,"rs_3m":6.2,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":true,"fresh_cross":false,"score":76.3,"in_watchlist":true},{"symbol":"ITC","name":"ITC Ltd.","sector":"Fast Moving Consumer Goods","sector_short":"FMCG","close":283.15,"chg_1d":1.54,"sma50":264.6,"sma200":286.34,"vs50":7.01,"vs200":-1.11,"slope50":-0.24,"ret_1m":6.57,"ret_3m":-0.96,"rs_3m":-2.56,"off_high":-29.35,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":41.3,"in_watchlist":false},{"symbol":"INFY","name":"Infosys Ltd.","sector":"Information Technology","sector_short":"IT","close":1181.4,"chg_1d":1.2,"sma50":1065.81,"sma200":1164.31,"vs50":10.85,"vs200":1.47,"slope50":0.47,"ret_1m":21.82,"ret_3m":3.73,"rs_3m":2.13,"off_high":-26.94,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":55.9,"in_watchlist":false},{"symbol":"INDIGO","name":"InterGlobe Aviation Ltd.","sector":"Services","sector_short":"Services","close":5476.0,"chg_1d":1.03,"sma50":4916.94,"sma200":4806.45,"vs50":11.37,"vs200":13.93,"slope50":-1.16,"ret_1m":9.74,"ret_3m":2.96,"rs_3m":1.36,"off_high":-7.48,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":61.3,"in_watchlist":false},{"symbol":"JSWSTEEL","name":"JSW Steel Ltd.","sector":"Metals & Mining","sector_short":"Metals","close":1357.1,"chg_1d":0.11,"sma50":1265.73,"sma200":1244.86,"vs50":7.22,"vs200":9.02,"slope50":0.09,"ret_1m":10.33,"ret_3m":3.76,"rs_3m":2.16,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":false,"fresh_cross":true,"score":81.3,"in_watchlist":true},{"symbol":"JIOFIN","name":"Jio Financial Services Ltd.","sector":"Financial Services","sector_short":"Financials","close":231.2,"chg_1d":0.69,"sma50":222.6,"sma200":239.42,"vs50":3.87,"vs200":-3.43,"slope50":-2.91,"ret_1m":6.82,"ret_3m":-11.92,"rs_3m":-13.52,"off_high":-26.41,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":11.6,"in_watchlist":false},{"symbol":"KOTAKBANK","name":"Kotak Mahindra Bank Ltd.","sector":"Financial Services","sector_short":"Financials","close":480.0,"chg_1d":2.78,"sma50":430.32,"sma200":401.22,"vs50":11.54,"vs200":19.64,"slope50":2.99,"ret_1m":9.09,"ret_3m":21.83,"rs_3m":20.23,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":false,"fresh_cross":false,"score":98.5,"in_watchlist":true},{"symbol":"LT","name":"Larsen & Toubro Ltd.","sector":"Construction","sector_short":"Construction","close":4117.7,"chg_1d":1.67,"sma50":3835.71,"sma200":3916.71,"vs50":7.35,"vs200":5.13,"slope50":-0.96,"ret_1m":11.24,"ret_3m":1.38,"rs_3m":-0.22,"off_high":-5.89,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":65.4,"in_watchlist":false},{"symbol":"M&M","name":"Mahindra & Mahindra Ltd.","sector":"Automobile and Auto Components","sector_short":"Auto","close":3287.2,"chg_1d":5.11,"sma50":3004.95,"sma200":3168.45,"vs50":9.39,"vs200":3.75,"slope50":-3.04,"ret_1m":17.4,"ret_3m":-3.49,"rs_3m":-5.09,"off_high":-12.64,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":38.7,"in_watchlist":false},{"symbol":"MARUTI","name":"Maruti Suzuki India Ltd.","sector":"Automobile and Auto Components","sector_short":"Auto","close":12750.0,"chg_1d":0.77,"sma50":12039.16,"sma200":13277.96,"vs50":5.9,"vs200":-3.98,"slope50":-3.12,"ret_1m":11.35,"ret_3m":-8.54,"rs_3m":-10.14,"off_high":-25.53,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":13.9,"in_watchlist":false},{"symbol":"MAXHEALTH","name":"Max Healthcare Institute Ltd.","sector":"Healthcare","sector_short":"Healthcare","close":934.0,"chg_1d":0.21,"sma50":944.98,"sma200":1010.3,"vs50":-1.16,"vs200":-7.55,"slope50":-2.54,"ret_1m":2.86,"ret_3m":-12.91,"rs_3m":-14.51,"off_high":-20.78,"above50":false,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":14.6,"in_watchlist":false},{"symbol":"NTPC","name":"NTPC Ltd.","sector":"Power","sector_short":"Power","close":323.45,"chg_1d":3.11,"sma50":317.33,"sma200":348.64,"vs50":1.93,"vs200":-7.22,"slope50":-1.31,"ret_1m":3.09,"ret_3m":-4.33,"rs_3m":-5.93,"off_high":-19.53,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":33.0,"in_watchlist":false},{"symbol":"NESTLEIND","name":"Nestle India Ltd.","sector":"Fast Moving Consumer Goods","sector_short":"FMCG","close":1282.1,"chg_1d":1.89,"sma50":1325.81,"sma200":1354.87,"vs50":-3.3,"vs200":-5.37,"slope50":-3.89,"ret_1m":-3.16,"ret_3m":-16.48,"rs_3m":-18.08,"off_high":-16.75,"above50":false,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":10.9,"in_watchlist":false},{"symbol":"ONGC","name":"Oil & Natural Gas Corporation Ltd.","sector":"Oil Gas & Consumable Fuels","sector_short":"Oil & Gas","close":231.76,"chg_1d":0.77,"sma50":229.94,"sma200":253.66,"vs50":0.79,"vs200":-8.63,"slope50":-0.59,"ret_1m":4.45,"ret_3m":-2.13,"rs_3m":-3.73,"off_high":-22.78,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":41.0,"in_watchlist":false},{"symbol":"POWERGRID","name":"Power Grid Corporation of India Ltd.","sector":"Power","sector_short":"Power","close":259.9,"chg_1d":0.68,"sma50":256.9,"sma200":278.3,"vs50":1.17,"vs200":-6.61,"slope50":-0.68,"ret_1m":3.9,"ret_3m":-2.44,"rs_3m":-4.04,"off_high":-17.69,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":43.2,"in_watchlist":false},{"symbol":"RELIANCE","name":"Reliance Industries Ltd.","sector":"Oil Gas & Consumable Fuels","sector_short":"Oil & Gas","close":1320.0,"chg_1d":0.5,"sma50":1235.59,"sma200":1322.41,"vs50":6.83,"vs200":-0.18,"slope50":-1.15,"ret_1m":9.3,"ret_3m":-0.38,"rs_3m":-1.98,"off_high":-16.72,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":46.8,"in_watchlist":false},{"symbol":"SBILIFE","name":"SBI Life Insurance Company Ltd.","sector":"Financial Services","sector_short":"Financials","close":1784.0,"chg_1d":2.82,"sma50":1705.96,"sma200":1839.68,"vs50":4.57,"vs200":-3.03,"slope50":-1.22,"ret_1m":3.35,"ret_3m":-4.16,"rs_3m":-5.76,"off_high":-15.32,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":39.2,"in_watchlist":false},{"symbol":"SHRIRAMFIN","name":"Shriram Finance Ltd.","sector":"Financial Services","sector_short":"Financials","close":961.15,"chg_1d":-0.3,"sma50":962.18,"sma200":990.62,"vs50":-0.11,"vs200":-2.97,"slope50":-4.8,"ret_1m":2.18,"ret_3m":-15.1,"rs_3m":-16.7,"off_high":-15.1,"above50":false,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":15.8,"in_watchlist":false},{"symbol":"SBIN","name":"State Bank of India","sector":"Financial Services","sector_short":"Financials","close":1018.5,"chg_1d":1.2,"sma50":984.17,"sma200":1031.01,"vs50":3.49,"vs200":-1.21,"slope50":-1.64,"ret_1m":6.76,"ret_3m":-6.13,"rs_3m":-7.73,"off_high":-15.55,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":30.1,"in_watchlist":false},{"symbol":"SUNPHARMA","name":"Sun Pharmaceutical Industries Ltd.","sector":"Healthcare","sector_short":"Healthcare","close":1860.0,"chg_1d":1.69,"sma50":1824.09,"sma200":1807.23,"vs50":1.97,"vs200":2.92,"slope50":-1.42,"ret_1m":4.44,"ret_3m":-4.66,"rs_3m":-6.26,"off_high":-7.05,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":43.9,"in_watchlist":false},{"symbol":"TCS","name":"Tata Consultancy Services Ltd.","sector":"Information Technology","sector_short":"IT","close":2498.5,"chg_1d":0.11,"sma50":2275.7,"sma200":2378.6,"vs50":9.79,"vs200":5.04,"slope50":1.68,"ret_1m":20.74,"ret_3m":5.85,"rs_3m":4.25,"off_high":-21.61,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":64.4,"in_watchlist":false},{"symbol":"TATACONSUM","name":"Tata Consumer Products Ltd.","sector":"Fast Moving Consumer Goods","sector_short":"FMCG","close":1086.3,"chg_1d":0.8,"sma50":997.98,"sma200":1087.41,"vs50":8.85,"vs200":-0.1,"slope50":-0.69,"ret_1m":12.16,"ret_3m":-0.34,"rs_3m":-1.94,"off_high":-13.81,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":false,"score":55.0,"in_watchlist":false},{"symbol":"TMPV","name":"Tata Motors Passenger Vehicles Ltd.","sector":"Automobile and Auto Components","sector_short":"Auto","close":292.0,"chg_1d":-0.58,"sma50":290.35,"sma200":333.64,"vs50":0.57,"vs200":-12.48,"slope50":-3.55,"ret_1m":3.18,"ret_3m":-15.45,"rs_3m":-17.05,"off_high":-29.4,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":4.5,"in_watchlist":false},{"symbol":"TATASTEEL","name":"Tata Steel Ltd.","sector":"Metals & Mining","sector_short":"Metals","close":186.3,"chg_1d":2.36,"sma50":180.29,"sma200":191.74,"vs50":3.34,"vs200":-2.84,"slope50":-1.1,"ret_1m":6.07,"ret_3m":-1.58,"rs_3m":-3.19,"off_high":-14.01,"above50":true,"above200":false,"leader":false,"hold_ok":false,"extended":false,"fresh_cross":true,"score":48.4,"in_watchlist":false},{"symbol":"TECHM","name":"Tech Mahindra Ltd.","sector":"Information Technology","sector_short":"IT","close":1831.0,"chg_1d":0.46,"sma50":1618.66,"sma200":1498.33,"vs50":13.12,"vs200":22.2,"slope50":2.58,"ret_1m":23.81,"ret_3m":13.11,"rs_3m":11.51,"off_high":0.0,"above50":true,"above200":true,"leader":true,"hold_ok":true,"extended":true,"fresh_cross":false,"score":83.9,"in_watchlist":true},{"symbol":"TITAN","name":"Titan Company Ltd.","sector":"Consumer Durables","sector_short":"Consumer Durables","close":5000.0,"chg_1d":3.42,"sma50":4711.76,"sma200":4449.96,"vs50":6.12,"vs200":12.36,"slope50":-2.17,"ret_1m":14.23,"ret_3m":0.04,"rs_3m":-1.56,"off_high":-3.27,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":true,"score":59.5,"in_watchlist":false},{"symbol":"TRENT","name":"Trent Ltd.","sector":"Consumer Services","sector_short":"Consumer Services","close":3079.0,"chg_1d":0.79,"sma50":2842.38,"sma200":2791.13,"vs50":8.32,"vs200":10.31,"slope50":0.08,"ret_1m":6.53,"ret_3m":-0.9,"rs_3m":-2.51,"off_high":-34.58,"above50":true,"above200":true,"leader":false,"hold_ok":true,"extended":false,"fresh_cross":false,"score":43.0,"in_watchlist":false},{"symbol":"ULTRACEMCO","name":"UltraTech Cement Ltd.","sector":"Construction Materials","sector_short":"Cement & Materials","close":12450.0,"chg_1d":1.63,"sma50":11102.6,"sma200":11464.96,"vs50":12.14,"vs200":8.59,"slope50":-0.14,"ret_1m":16.81,"ret_3m":3.11,"rs_3m":1.5,"off_high":-2.67,"above50":true,"above200":true,"leader":false,"hold_ok":false,"extended":true,"fresh_cross":true,"score":64.2,"in_watchlist":false}],"watchlist":["KOTAKBANK","ADANIPORTS","ETERNAL","TECHM","JSWSTEEL","HCLTECH","ICICIBANK"],"by_sector":[{"sector":"Information Technology","short":"IT","good":true,"status":"Leading","b50":100.0,"above":4,"n":4,"picks":["TECHM","HCLTECH"],"other_leaders":[]},{"sector":"Telecommunication","short":"Telecom","good":true,"status":"Leading","b50":100.0,"above":1,"n":1,"picks":[],"other_leaders":[]},{"sector":"Construction Materials","short":"Cement & Materials","good":true,"status":"Leading","b50":100.0,"above":2,"n":2,"picks":[],"other_leaders":[]},{"sector":"Consumer Durables","short":"Consumer Durables","good":true,"status":"Leading","b50":100.0,"above":2,"n":2,"picks":[],"other_leaders":[]},{"sector":"Construction","short":"Construction","good":true,"status":"Leading","b50":100.0,"above":1,"n":1,"picks":[],"other_leaders":[]},{"sector":"Services","short":"Services","good":true,"status":"Strong","b50":100.0,"above":2,"n":2,"picks":["ADANIPORTS"],"other_leaders":[]},{"sector":"Consumer Services","short":"Consumer Services","good":true,"status":"Strong","b50":100.0,"above":2,"n":2,"picks":["ETERNAL"],"other_leaders":[]},{"sector":"Financial Services","short":"Financials","good":true,"status":"Strong","b50":91.7,"above":11,"n":12,"picks":["KOTAKBANK","ICICIBANK"],"other_leaders":[]},{"sector":"Automobile and Auto Components","short":"Auto","good":true,"status":"Strong","b50":80.0,"above":4,"n":5,"picks":[],"other_leaders":[]},{"sector":"Capital Goods","short":"Capital Goods","good":true,"status":"Strong","b50":100.0,"above":1,"n":1,"picks":[],"other_leaders":[]},{"sector":"Power","short":"Power","good":true,"status":"Strong","b50":100.0,"above":2,"n":2,"picks":[],"other_leaders":[]},{"sector":"Healthcare","short":"Healthcare","good":true,"status":"Strong","b50":80.0,"above":4,"n":5,"picks":[],"other_leaders":[]},{"sector":"Fast Moving Consumer Goods","short":"FMCG","good":true,"status":"Strong","b50":75.0,"above":3,"n":4,"picks":[],"other_leaders":[]},{"sector":"Metals & Mining","short":"Metals","good":true,"status":"Strong","b50":75.0,"above":3,"n":4,"picks":["JSWSTEEL"],"other_leaders":[]},{"sector":"Oil Gas & Consumable Fuels","short":"Oil & Gas","good":true,"status":"Strong","b50":66.7,"above":2,"n":3,"picks":[],"other_leaders":[]}],"regimes":{"THRUST":{"label":"BREADTH THRUST","tone":"best"},"BEST":{"label":"BEST TIME FOR SWINGS","tone":"best"},"GOOD":{"label":"GOOD — BE SELECTIVE","tone":"good"},"OVERHEATED":{"label":"OVERHEATED — DON'T CHASE","tone":"warn"},"FADING":{"label":"FADING — TIGHTEN STOPS","tone":"warn"},"NEUTRAL":{"label":"NEUTRAL — WAIT","tone":"neutral"},"EARLY_REVERSAL":{"label":"EARLY REVERSAL","tone":"good"},"OVERSOLD":{"label":"OVERSOLD — WATCH","tone":"bad"},"AVOID":{"label":"AVOID NEW SWINGS","tone":"bad"}},"fundamentals":{"KOTAKBANK":{"checks":[{"key":"debt","label":"Debt / Equity","value":null,"display":"N/A (lender)","status":"na","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":14.1,"display":"14.1%","status":"fail","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":0.72,"display":"0.72%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":19288.0,"display":"₹19,288 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":8.9,"display":"8.9%","status":"fail","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":5,"display":"5/7 (adj.)","status":"pass","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":477498.0,"display":"₹4.77 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":3,"failed":3,"to_check":0,"applicable":6,"verdict":"WEAK","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":false,"Cash flow above net profit":true,"Long-term debt ratio falling":true,"Current ratio improving":null,"No new shares issued":true,"Gross margin improving":null,"Asset turnover improving":false},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"ADANIPORTS":{"checks":[{"key":"debt","label":"Debt / Equity","value":0.66,"display":"0.66","status":"fail","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":22.9,"display":"22.9%","status":"pass","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":0.63,"display":"0.63%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":12806.0,"display":"₹12,806 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":34.1,"display":"34.1%","status":"pass","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":6,"display":"6/9","status":"pass","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":446185.0,"display":"₹4.46 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":5,"failed":2,"to_check":0,"applicable":7,"verdict":"PARTIAL","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":false,"Cash flow above net profit":true,"Long-term debt ratio falling":false,"Current ratio improving":true,"No new shares issued":false,"Gross margin improving":true,"Asset turnover improving":true},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"ETERNAL":{"checks":[{"key":"debt","label":"Debt / Equity","value":0.15,"display":"0.15","status":"pass","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":97.7,"display":"97.7%","status":"pass","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":0.0,"display":"0.00%","status":"pass","rule":"0%"},{"key":"profit","label":"Profitable","value":366.0,"display":"₹366 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":null,"display":"was loss-making 3 yrs ago","status":"check","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":4,"display":"4/8 (adj.)","status":"fail","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":334562.0,"display":"₹3.35 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":5,"failed":1,"to_check":1,"applicable":7,"verdict":"PARTIAL","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":false,"Cash flow above net profit":true,"Long-term debt ratio falling":null,"Current ratio improving":false,"No new shares issued":false,"Gross margin improving":false,"Asset turnover improving":true},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"TECHM":{"checks":[{"key":"debt","label":"Debt / Equity","value":0.07,"display":"0.07","status":"pass","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":2.2,"display":"2.2%","status":"fail","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":0.46,"display":"0.46%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":4811.0,"display":"₹4,811 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":-0.1,"display":"-0.1%","status":"fail","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":8,"display":"8/8 (adj.)","status":"pass","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":179476.0,"display":"₹1.79 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":4,"failed":3,"to_check":0,"applicable":7,"verdict":"WEAK","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":true,"Cash flow above net profit":true,"Long-term debt ratio falling":null,"Current ratio improving":true,"No new shares issued":true,"Gross margin improving":true,"Asset turnover improving":true},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"JSWSTEEL":{"checks":[{"key":"debt","label":"Debt / Equity","value":1.19,"display":"1.19","status":"fail","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":3.6,"display":"3.6%","status":"fail","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":7.86,"display":"7.86%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":22316.0,"display":"₹22,316 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":75.3,"display":"75.3%","status":"pass","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":9,"display":"9/9","status":"pass","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":331265.0,"display":"₹3.31 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":4,"failed":3,"to_check":0,"applicable":7,"verdict":"WEAK","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":true,"Cash flow above net profit":true,"Long-term debt ratio falling":true,"Current ratio improving":true,"No new shares issued":true,"Gross margin improving":true,"Asset turnover improving":true},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"HCLTECH":{"checks":[{"key":"debt","label":"Debt / Equity","value":0.07,"display":"0.07","status":"pass","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":8.7,"display":"8.7%","status":"fail","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":0.28,"display":"0.28%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":16642.0,"display":"₹16,642 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":3.9,"display":"3.9%","status":"fail","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":7,"display":"7/9","status":"pass","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":389754.0,"display":"₹3.90 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":4,"failed":3,"to_check":0,"applicable":7,"verdict":"WEAK","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":false,"Cash flow above net profit":true,"Long-term debt ratio falling":true,"Current ratio improving":true,"No new shares issued":true,"Gross margin improving":false,"Asset turnover improving":true},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"},"ICICIBANK":{"checks":[{"key":"debt","label":"Debt / Equity","value":null,"display":"N/A (lender)","status":"na","rule":"below 0.5"},{"key":"sales","label":"Sales growth (3Y CAGR)","value":18.1,"display":"18.1%","status":"pass","rule":"15%+"},{"key":"pledge","label":"Promoter pledge","value":1.03,"display":"1.03%","status":"fail","rule":"0%"},{"key":"profit","label":"Profitable","value":54208.0,"display":"₹54,208 Cr profit","status":"pass","rule":"net profit > 0"},{"key":"pgrowth","label":"Profit growth (3Y CAGR)","value":16.8,"display":"16.8%","status":"pass","rule":"15%+"},{"key":"piotroski","label":"Piotroski score","value":4,"display":"4/7 (adj.)","status":"fail","rule":"6+ of 9"},{"key":"mcap","label":"Market cap","value":1128250.0,"display":"₹11.28 L Cr","status":"pass","rule":"above ₹10,000 Cr"}],"passed":4,"failed":2,"to_check":0,"applicable":6,"verdict":"PARTIAL","piotroski_tests":{"Return on assets positive":true,"Operating cash flow positive":true,"Return on assets improving":false,"Cash flow above net profit":true,"Long-term debt ratio falling":true,"Current ratio improving":null,"No new shares issued":false,"Gross margin improving":null,"Asset turnover improving":false},"pledge_source":"NSE pledge disclosures","checked":"2026-11-06"}},"first_seen":{"KOTAKBANK":"2026-11-06","ADANIPORTS":"2026-11-06","ETERNAL":"2026-11-06","TECHM":"2026-11-06","JSWSTEEL":"2026-11-06","HCLTECH":"2026-11-06","ICICIBANK":"2026-11-06"},"alerts":[{"date":"2026-11-06","type":"welcome","title":"Analyser started","text":"*VESTORA ANALYST* · 06 Nov 2026\n✅ Analyser is live. You'll get alerts here.\n\n🟢 Market mode: *BREADTH THRUST*\nNifty 50 above 50 DMA: *44/50 (88%)* ▲52 pts in 5 days\nAbove 200 DMA: 30/50 (60%)\nSwing score: *63/100*\nNifty: 25,030 (+2.01%), above 50 DMA\n\nStrong sectors: IT 4/4, Telecom 1/1, Cement & Materials 2/2\nWatchlist (7): KOTAKBANK, ADANIPORTS, ETERNAL, TECHM, JSWSTEEL, HCLTECH, ICICIBANK\n\nDashboard: https://vestorawealth.github.io/vestora-analyst/","sent":false}],"generated_at":"06 Nov 2026, 05:01 PM IST","sources":{"prices":"Yahoo Finance (daily, adjusted)","constituents":"https://www.niftyindices.com/IndexConstituent/ind_nifty50list.csv","fundamentals":"Yahoo Finance annual reports; promoter pledge from NSE","demo":false},"dashboard_url":"https://vestorawealth.github.io/vestora-analyst/","settings":{"breadth":{"dma_short":50,"dma_long":200,"momentum_days":5,"best_zone_min":60,"good_zone_min":50,"weak_zone_max":40,"oversold_max":25,"overheated_min":85,"reversal_jump":10,"thrust_from":25,"thrust_to":60,"thrust_window":10},"sectors":{"min_breadth_pct":50,"exit_breadth_pct":35},"leaders":{"require_above_50dma":true,"require_50_above_200":true,"slope_days":10,"max_off_52w_high_pct":15,"rs_lookback_days":63,"extended_above_50dma_pct":12,"fresh_cross_days":5,"exit_buffer_pct":1},"fundamentals":{"max_debt_to_equity":0.5,"min_sales_cagr_3y_pct":15,"require_zero_pledge":true,"require_profitable":true,"min_profit_cagr_3y_pct":15,"min_piotroski":6,"min_market_cap_cr":10000,"skip_debt_check_sectors":["Financial Services"],"cache_days":7}}};
+(function(){
+  "use strict";
+  if (typeof DATA !== "object" || !DATA) { document.getElementById("app").insertAdjacentHTML("beforeend", "<p>No data yet.</p>"); return; }
+  const D = DATA, M = D.market, S = D.settings || {};
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const nf = (x, d=0) => x == null || isNaN(x) ? "—" : Number(x).toLocaleString("en-IN", {minimumFractionDigits:d, maximumFractionDigits:d});
+  const sg = (x, d=1, suf="%") => { if (x == null || isNaN(x)) return "—"; const r = Number(Number(x).toFixed(d)); return (r > 0 ? "+" : r < 0 ? "−" : "") + nf(Math.abs(r), d) + suf; };
+  const cls = (x) => x == null || Math.abs(x) < 0.05 ? "flat" : x > 0 ? "up" : "down";
+  const rupee = (x) => x == null ? "—" : "₹" + nf(x, x < 1000 ? 2 : 0);
+  const dfmt = (s, opt={day:"2-digit", month:"short", year:"numeric"}) => { const d = new Date(s + "T00:00:00"); return isNaN(d) ? s : d.toLocaleDateString("en-IN", opt); };
+  const TONE_GLYPH = {best:"▲", good:"↗", neutral:"●", warn:"◆", bad:"▼"};
+  const TONE_WORD = {best:"Favourable", good:"Constructive", neutral:"Neutral", warn:"Caution", bad:"Unfavourable"};
+  const REG = D.regimes || {};
+  const toneOf = (r) => (REG[r] && REG[r].tone) || "neutral";
+  const stocks = D.stocks || [];
+  const bySym = Object.fromEntries(stocks.map(s => [s.symbol, s]));
+
+  /* ---------- header ---------- */
+  $("stamp").innerHTML = `<span>Data as of <b>${esc(dfmt(D.asof))}</b></span><span>Updated <b>${esc(D.generated_at || "")}</b></span>`;
+  if (D.sources && D.sources.demo) $("demo").hidden = false;
+  $("src").textContent = "Sources: " + [D.sources && D.sources.prices, D.sources && D.sources.fundamentals].filter(Boolean).join(" · ") + (D.sources && D.sources.constituents ? " · Index list: " + D.sources.constituents : "");
+
+  /* ---------- verdict ---------- */
+  const tone = M.regime_tone || "neutral";
+  const v = $("verdict");
+  v.classList.add("tone-" + tone);
+  v.innerHTML = `
+    <span class="eyebrow">Market mode · swing timing</span>
+    <span class="pill"><i aria-hidden="true">${TONE_GLYPH[tone]}</i>${TONE_WORD[tone]}</span>
+    <h1 class="mode">${esc(M.regime_label)}</h1>
+    <p class="advice">${esc(M.advice)}</p>
+    ${M.pending ? `<p class="pending">Today's reading points to <b>${esc(M.regime_raw_label)}</b>. The mode switches if it holds for one more session.</p>` : ""}
+    <div class="score">
+      <div class="score-row"><span class="eyebrow">Swing conditions score</span><span class="score-val">${nf(M.score)}<small> / 100</small></span></div>
+      <div class="track" role="img" aria-label="Score ${nf(M.score)} out of 100"><span style="width:${Math.max(2, Math.min(100, M.score || 0))}%"></span></div>
+      <div class="score-scale"><span>Stay out</span><span>Selective</span><span>Go</span></div>
+    </div>`;
+
+  /* ---------- dial ---------- */
+  (function dial(){
+    const B = S.breadth || {oversold_max:25, weak_zone_max:40, best_zone_min:60, overheated_min:85};
+    const zones = [
+      [0, B.oversold_max, "bad", "Oversold"], [B.oversold_max, B.weak_zone_max, "warn", "Weak"],
+      [B.weak_zone_max, B.best_zone_min, "neutral", "Neutral"], [B.best_zone_min, B.overheated_min, "best", "Strong"],
+      [B.overheated_min, 100, "warn", "Hot"]];
+    const cx = 150, cy = 146, r = 104, w = 18;
+    const ang = (p) => Math.PI * (1 - p / 100);
+    const pt = (p, rr) => [cx + rr * Math.cos(ang(p)), cy - rr * Math.sin(ang(p))];
+    const arc = (a, b, rr) => { const [x1,y1] = pt(a, rr), [x2,y2] = pt(b, rr); return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${rr} ${rr} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
+    let segs = "", labs = "";
+    zones.forEach(([a, b, t, lab]) => {
+      segs += `<path d="${arc(a + .6, b - .6, r)}" stroke="var(--${t})" stroke-width="${w}" fill="none" opacity=".88"/>`;
+      const [lx, ly] = pt((a + b) / 2, r + w / 2 + 16);
+      labs += `<text class="zl" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${lab}</text>`;
+    });
+    const val = Math.max(0, Math.min(100, M.b50 || 0));
+    const [mx, my] = pt(val, r);
+    const ticks = [25, 50, 75].map(p => { const [a1,b1] = pt(p, r - w/2 - 3), [a2,b2] = pt(p, r - w/2 - 9); return `<line x1="${a1}" y1="${b1}" x2="${a2}" y2="${b2}" stroke="var(--muted)" stroke-width="1"/>`; }).join("");
+    $("dial").innerHTML = `
+      <span class="eyebrow">Stocks above 50 DMA</span>
+      <svg viewBox="-26 0 352 164" role="img" aria-label="${nf(M.b50)}% of Nifty 50 stocks above their 50-day moving average">
+        ${segs}${ticks}${labs}
+        <circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="9" fill="var(--surface)" stroke="var(--gold)" stroke-width="3"/>
+        <text class="big" x="${cx}" y="${cy - 22}" text-anchor="middle">${nf(M.b50)}%</text>
+        <text class="cap" x="${cx}" y="${cy + 2}" text-anchor="middle">${M.above50} of ${M.valid50} stocks</text>
+      </svg>
+      <div class="dial-foot">
+        <span>5-day change <b class="${cls(M.d5)}">${sg(M.d5, 0, " pts")}</b></span>
+        <span>1 month ago <b>${nf(M.b50_1m)}%</b></span>
+      </div>`;
+  })();
+
+  /* ---------- KPIs ---------- */
+  $("kpis").innerHTML = [
+    ["Above 200 DMA", `${nf(M.b200)}%<small>${M.above200} of ${M.valid200} · long-term trend</small>`],
+    ["Nifty 50", `${nf(M.nifty, 0)}<small class="${cls(M.nifty_chg)}">${sg(M.nifty_chg, 2)} today</small>`],
+    ["Nifty vs its 50 DMA", `<span class="${cls(M.nifty_vs50)}">${sg(M.nifty_vs50, 1)}</span><small>50 DMA ${M.nifty_sma_rising ? "rising" : "falling"} · ${nf(M.nifty_sma50, 0)}</small>`],
+    ["Advances / declines", `<span class="up">${M.adv}</span> / <span class="down">${M.dec}</span><small>today, of 50</small>`],
+    ["Watchlist", `${(D.watchlist || []).length}<small>stocks qualify today</small>`],
+  ].map(([k, val]) => `<div class="kpi"><span class="k">${k}</span><span class="v">${val}</span></div>`).join("");
+
+  /* ---------- charts ---------- */
+  const H = D.history;
+  let span = 250;
+  const tip = $("tip");
+  const charts = [];
+
+  function niceTicks(lo, hi, n) {
+    const raw = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+    const step = (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag;
+    const out = []; for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) out.push(t);
+    return out;
+  }
+  function monthTicks(dates) {
+    const out = []; let last = "";
+    dates.forEach((d, i) => { const m = d.slice(0, 7); if (m !== last) { if (i > 0) out.push(i); last = m; } });
+    return out;
+  }
+
+  function drawChart(el, kind) {
+    const W = Math.max(300, el.clientWidth), Hh = kind === "nifty" ? 210 : 250;
+    const ml = 48, mr = 14, mt = 10, mb = 24, iw = W - ml - mr, ih = Hh - mt - mb;
+    const n0 = Math.max(0, H.dates.length - span), dates = H.dates.slice(n0);
+    const N = dates.length;
+    const x = (i) => ml + (N <= 1 ? 0 : (i / (N - 1)) * iw);
+    let y, lo, hi, svg = "";
+    if (kind === "nifty") {
+      const vals = H.nifty.slice(n0).filter(v => v != null);
+      lo = Math.min(...vals); hi = Math.max(...vals); const pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+      y = (v) => mt + ih - ((v - lo) / (hi - lo)) * ih;
+      // mode shading
+      const bw = iw / Math.max(1, N - 1);
+      svg += `<g class="shade">` + H.tone.slice(n0).map((t, i) => `<rect class="sh-${t}" x="${(x(i) - bw / 2).toFixed(2)}" y="${mt}" width="${(bw + .4).toFixed(2)}" height="${ih}"/>`).join("") + `</g>`;
+      niceTicks(lo, hi, 4).forEach(t => { svg += `<line class="grid-l" x1="${ml}" x2="${W - mr}" y1="${y(t)}" y2="${y(t)}"/><text class="ax" x="${ml - 8}" y="${y(t)}" text-anchor="end" dominant-baseline="middle">${nf(t)}</text>`; });
+      svg += `<path class="ln-nifty" d="${H.nifty.slice(n0).map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("")}"/>`;
+    } else {
+      lo = 0; hi = 100; y = (v) => mt + ih - (v / 100) * ih;
+      const B = S.breadth || {oversold_max:25, best_zone_min:60, overheated_min:85};
+      svg += `<rect class="zone-bad" x="${ml}" y="${y(B.oversold_max)}" width="${iw}" height="${y(0) - y(B.oversold_max)}"/>`;
+      svg += `<rect class="zone-best" x="${ml}" y="${y(B.overheated_min)}" width="${iw}" height="${y(B.best_zone_min) - y(B.overheated_min)}"/>`;
+      svg += `<rect class="zone-warn" x="${ml}" y="${y(100)}" width="${iw}" height="${y(B.overheated_min) - y(100)}"/>`;
+      [0, 25, 50, 75, 100].forEach(t => { svg += `<line class="grid-l" x1="${ml}" x2="${W - mr}" y1="${y(t)}" y2="${y(t)}"/><text class="ax" x="${ml - 8}" y="${y(t)}" text-anchor="end" dominant-baseline="middle">${t}%</text>`; });
+      svg += `<line class="ref" x1="${ml}" x2="${W - mr}" y1="${y(50)}" y2="${y(50)}"/>`;
+      svg += `<text class="zone-lab" x="${ml + 8}" y="${y(100) + 12}">Overheated ≥${B.overheated_min}</text>`;
+      svg += `<text class="zone-lab" x="${ml + 8}" y="${y(B.overheated_min) + 13}">Best zone ${B.best_zone_min}–${B.overheated_min}</text>`;
+      svg += `<text class="zone-lab" x="${ml + 8}" y="${y(B.oversold_max) + 13}">Oversold ≤${B.oversold_max}</text>`;
+      const path = (arr) => { let d = "", pen = false; arr.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1); pen = true; }); return d; };
+      svg += `<path class="ln-b200" d="${path(H.b200.slice(n0))}"/>`;
+      svg += `<path class="ln-b50" d="${path(H.b50.slice(n0))}"/>`;
+      (H.thrust || []).forEach(td => { const i = dates.indexOf(td); if (i >= 0) { const xx = x(i), yy = y(0) - 2; svg += `<path class="thrust" d="M${xx} ${yy - 9} L${xx + 6} ${yy} L${xx - 6} ${yy} Z"><title>Breadth thrust ${dfmt(td)}</title></path>`; } });
+      // endpoint
+      const lv = H.b50[H.b50.length - 1];
+      svg += `<circle class="dot-b50" cx="${x(N - 1)}" cy="${y(lv)}" r="4.5"/>`;
+    }
+    // x axis months
+    const mts = monthTicks(dates), every = Math.ceil(mts.length / Math.max(2, Math.floor(iw / 70)));
+    mts.forEach((i, k) => { if (k % every) return; svg += `<text class="ax" x="${x(i)}" y="${Hh - 6}" text-anchor="middle">${dfmt(dates[i], {month:"short"})}${dates[i].slice(5,7) === "01" ? " ’" + dates[i].slice(2,4) : ""}</text>`; });
+    svg += `<line class="xhair" x1="0" x2="0" y1="${mt}" y2="${mt + ih}" visibility="hidden"/>`;
+    svg += `<circle class="${kind === "nifty" ? "dot-nifty" : "dot-b50"} hov" r="4.5" cx="0" cy="0" visibility="hidden"/>`;
+    svg += `<rect x="${ml}" y="${mt}" width="${iw}" height="${ih}" fill="transparent" class="hit" style="cursor:crosshair"/>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" width="${W}" height="${Hh}" role="img" aria-label="${kind === "nifty" ? "Nifty 50 index with market mode shading" : "Percent of Nifty 50 stocks above 50 and 200 day moving averages"}">${svg}</svg>`;
+    return {el, kind, x, y, n0, N, ml, iw};
+  }
+
+  function renderCharts() {
+    charts.length = 0;
+    charts.push(drawChart($("c-nifty"), "nifty"), drawChart($("c-breadth"), "breadth"));
+    charts.forEach(c => {
+      const hit = c.el.querySelector(".hit");
+      const move = (ev) => {
+        const svg = c.el.querySelector("svg"), r = svg.getBoundingClientRect();
+        const sx = (ev.clientX - r.left) * (svg.viewBox.baseVal.width / r.width);
+        const i = Math.max(0, Math.min(c.N - 1, Math.round((sx - c.ml) / c.iw * (c.N - 1))));
+        hover(i, ev, c);
+      };
+      hit.addEventListener("pointermove", move);
+      hit.addEventListener("pointerdown", move);
+      hit.addEventListener("pointerleave", () => { hover(-1); });
+    });
+  }
+  function hover(i, ev, src) {
+    charts.forEach(c => {
+      const xh = c.el.querySelector(".xhair"), dot = c.el.querySelector(".hov");
+      if (i < 0) { xh.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); return; }
+      const gi = c.n0 + i, val = c.kind === "nifty" ? H.nifty[gi] : H.b50[gi];
+      xh.setAttribute("x1", c.x(i)); xh.setAttribute("x2", c.x(i)); xh.setAttribute("visibility", "visible");
+      if (val != null) { dot.setAttribute("cx", c.x(i)); dot.setAttribute("cy", c.y(val)); dot.setAttribute("visibility", "visible"); }
+    });
+    if (i < 0) { tip.classList.remove("on"); return; }
+    const gi = charts[0].n0 + i, rg = H.regime[gi], t = toneOf(rg);
+    tip.innerHTML = `<div class="d">${esc(dfmt(H.dates[gi], {weekday:"short", day:"2-digit", month:"short", year:"numeric"}))}</div>
+      <div class="r"><span>Nifty 50</span><span>${nf(H.nifty[gi], 0)}</span></div>
+      <div class="r"><span>Above 50 DMA</span><span>${nf(H.b50[gi])}%</span></div>
+      <div class="r"><span>Above 200 DMA</span><span>${nf(H.b200[gi])}%</span></div>
+      <div class="m tone-${t}" style="color:var(--tone)">${TONE_GLYPH[t]} ${esc((REG[rg] || {}).label || rg)}</div>`;
+    const host = tip.parentElement.getBoundingClientRect(), er = src.el.getBoundingClientRect();
+    const px = ev.clientX - host.left, py = er.top - host.top + 8;
+    tip.classList.add("on");
+    const tw = tip.offsetWidth;
+    tip.style.left = Math.max(8, Math.min(host.width - tw - 8, px + (px > host.width / 2 ? -tw - 16 : 16))) + "px";
+    tip.style.top = py + "px";
+  }
+  $("range").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    span = +b.dataset.n;
+    $("range").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    renderCharts();
+  });
+  renderCharts();
+  let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(renderCharts, 120); }).observe($("c-breadth"));
+
+  /* ---------- sectors ---------- */
+  const SEC_TONE = {Leading:"best", Strong:"good", Improving:"good", Mixed:"neutral", Weak:"bad"};
+  const minB = (S.sectors && S.sectors.min_breadth_pct) || 50;
+  $("sec-sub").textContent = `Share of each sector's Nifty 50 stocks above the 50 DMA. Gold bars clear the ${minB}% "good breadth" line (dashed).`;
+  $("sectors").innerHTML = (D.sectors || []).map(s => {
+    const sp = (s.spark || []).filter(v => v != null), n = sp.length;
+    const pts = sp.map((v, i) => `${(2 + (i / Math.max(1, n - 1)) * 62).toFixed(1)},${(22 - v / 100 * 20).toFixed(1)}`).join(" ");
+    const last = pts.split(" ").pop() || "0,0", [lx, ly] = last.split(",");
+    const d1w = s.b50 != null && s.b50_1w != null ? s.b50 - s.b50_1w : null;
+    return `<div class="sec">
+      <div class="nm"><b title="${esc(s.name)}">${esc(s.short)}</b><small>${s.above}/${s.n} above · <span class="chip tone-${SEC_TONE[s.status] || "neutral"}">${esc(s.status)}</span></small></div>
+      <div class="bar ${s.good ? "good" : ""}" role="img" aria-label="${esc(s.short)} ${nf(s.b50)} percent above 50 DMA"><span style="width:${Math.max(1.5, s.b50 || 0)}%"></span><i style="left:${minB}%"></i></div>
+      <div class="pct">${nf(s.b50)}%<small class="${cls(d1w)}" title="Change vs one week ago">${d1w == null ? "" : sg(d1w, 0, "")} 1w</small></div>
+      <svg class="spark" viewBox="0 0 68 24" role="img" aria-label="${esc(s.short)} breadth, last 60 sessions"><polyline points="${pts}"/><circle cx="${lx}" cy="${ly}" r="2.4"/></svg>
+    </div>`;
+  }).join("");
+
+  /* ---------- watchlist ---------- */
+  const F = D.fundamentals || {};
+  const VTONE = {"STRONG":"best", "STRONG*":"best", "PARTIAL":"warn", "WEAK":"bad"};
+  const fBadge = (sym) => { const f = F[sym]; if (!f) return `<span class="fbadge tone-neutral">checking…</span>`; return `<span class="fbadge tone-${VTONE[f.verdict] || "neutral"}" title="Fundamentals: ${esc(f.verdict.replace("*", ""))}">Fundamentals ${f.passed}/${f.applicable}</span>`; };
+  const groups = (D.by_sector || []).filter(g => g.picks && g.picks.length);
+  const otherLeaders = (D.by_sector || []).flatMap(g => (g.other_leaders || []).map(s => ({s, sec: g.short})));
+  const fs = D.first_seen || {};
+  $("watch").innerHTML = groups.length ? groups.map(g => `
+    <div class="wl-group">
+      <div class="wl-head"><h3>${esc(g.short)}</h3><span>${g.above}/${g.n} above 50 DMA · ${nf(g.b50)}% breadth</span></div>
+      ${g.picks.map(sym => { const s = bySym[sym]; if (!s) return ""; return `
+        <button type="button" class="stock" aria-expanded="false" data-sym="${esc(sym)}">
+          <span><span class="sym">${esc(sym)}</span><span class="co">${esc(s.name)}</span></span>
+          <span class="px">${rupee(s.close)} <span class="${cls(s.chg_1d)}" style="font-weight:400; font-size:.8rem">${sg(s.chg_1d, 1)}</span></span>
+          <span class="stats">
+            <span>vs 50 DMA <b>${sg(s.vs50)}</b></span>
+            <span>RS 3M <b class="${cls(s.rs_3m)}">${sg(s.rs_3m)}</b></span>
+            <span>Off 52W high <b>${nf(Math.abs(s.off_high || 0), 1)}%</b></span>
+            ${s.fresh_cross ? `<span class="tag fresh">Fresh breakout</span>` : ""}
+            ${s.extended ? `<span class="tag ext">Extended · wait for pullback</span>` : ""}
+            ${s.leader ? "" : `<span class="tag">Holding · below entry rules</span>`}
+            ${fs[sym] ? `<span class="tag">Listed since ${esc(dfmt(fs[sym], {day:"2-digit", month:"short"}))}</span>` : ""}
+            ${fBadge(sym)}
+          </span>
+        </button>`; }).join("")}
+    </div>`).join("") + (otherLeaders.length ? `<p class="others">Leaders in sectors below ${minB}% breadth (not on the watchlist): ${otherLeaders.map(o => `<b>${esc(o.s)}</b> (${esc(o.sec)})`).join(", ")}</p>` : "")
+    : `<p class="empty">No stock qualifies today. That usually means breadth is weak — the watchlist refills as sectors recover.</p>`;
+  $("watch").addEventListener("click", (e) => {
+    const b = e.target.closest(".stock"); if (!b) return;
+    const open = b.getAttribute("aria-expanded") === "true";
+    b.setAttribute("aria-expanded", String(!open));
+    const ex = b.querySelector(".fdetail");
+    if (ex) { ex.remove(); return; }
+    const f = F[b.dataset.sym];
+    const det = document.createElement("span"); det.className = "fdetail";
+    det.innerHTML = f ? f.checks.map(c => `<span><span>${esc(c.label)}</span><span class="st ${c.status}">${esc(c.display)}</span></span>`).join("") : "<span>Fundamentals not checked yet.</span>";
+    b.appendChild(det);
+  });
+
+  /* ---------- fundamentals table ---------- */
+  const FC = [["debt","Debt / Equity"],["sales","Sales 3Y"],["pledge","Pledge"],["profit","Profitable"],["pgrowth","Profit 3Y"],["piotroski","Piotroski"],["mcap","Market cap"]];
+  const wl = D.watchlist || [];
+  if (!wl.length) { $("fund").outerHTML = `<p class="empty">Nothing to check — the watchlist is empty today.</p>`; }
+  else {
+    const anyF = F[wl.find(s => F[s])] || null;
+    const rules = Object.fromEntries((anyF ? anyF.checks : []).map(c => [c.key, c.rule]));
+    $("fund").innerHTML = `<thead><tr><th>Stock</th>${FC.map(([k, l]) => `<th>${l}<small>${esc(rules[k] || "")}</small></th>`).join("")}<th>Result</th></tr></thead><tbody>` +
+      wl.map(sym => { const f = F[sym], s = bySym[sym] || {}; const ck = f ? Object.fromEntries(f.checks.map(c => [c.key, c])) : {};
+        return `<tr><td><span class="s">${esc(sym)}</span><span class="n">${esc(s.sector_short || "")}</span></td>` +
+          FC.map(([k]) => { const c = ck[k]; return `<td>${c ? `<span class="st ${c.status}" title="${esc(c.label)}: ${esc(c.display)}">${esc(c.display)}</span>` : "—"}</td>`; }).join("") +
+          `<td>${f ? `<span class="ab tone-${VTONE[f.verdict] || "neutral"}">${f.passed}/${f.applicable} · ${esc(f.verdict.replace("*", ""))}${f.to_check ? " · verify" : ""}</span>` : "—"}</td></tr>`; }).join("") + `</tbody>`;
+  }
+
+  /* ---------- all stocks ---------- */
+  const COLS = [
+    ["symbol","Stock", s => `<span class="s">${esc(s.symbol)}</span><span class="n">${esc(s.name)}</span>`],
+    ["sector_short","Sector", s => `<span style="font-family:var(--f-body)">${esc(s.sector_short)}</span>`],
+    ["close","Price", s => rupee(s.close)],
+    ["chg_1d","1D", s => `<span class="${cls(s.chg_1d)}">${sg(s.chg_1d)}</span>`],
+    ["vs50","vs 50 DMA", s => `<span class="${cls(s.vs50)}">${sg(s.vs50)}</span>`],
+    ["vs200","vs 200 DMA", s => `<span class="${cls(s.vs200)}">${sg(s.vs200)}</span>`],
+    ["rs_3m","RS 3M", s => `<span class="${cls(s.rs_3m)}">${sg(s.rs_3m)}</span>`],
+    ["off_high","Off 52W high", s => sg(s.off_high)],
+    ["above50","50 DMA", s => `<span class="ab tone-${s.above50 ? "best" : "bad"}">${s.above50 ? "Above" : "Below"}</span>`],
+    ["score","Leader", s => s.in_watchlist ? `<span class="ab tone-best">Watchlist</span>` : s.leader ? `<span class="ab tone-good">Leader</span>` : `<span style="color:var(--muted)">—</span>`],
+  ];
+  let sortK = "vs50", sortDir = -1, filt = "all", q = "", showAll = false;
+  const PAGE = 15;
+  function renderAll() {
+    let rows = stocks.filter(s => filt === "all" || (filt === "above" && s.above50) || (filt === "below" && !s.above50) || (filt === "leaders" && (s.leader || s.in_watchlist)));
+    if (q) rows = rows.filter(s => (s.symbol + " " + s.name + " " + s.sector + " " + s.sector_short).toLowerCase().includes(q));
+    rows.sort((a, b) => { const x = a[sortK], y = b[sortK]; if (typeof x === "string" || typeof y === "string") return sortDir * String(x).localeCompare(String(y)); return sortDir * ((x == null ? -1e9 : +x) - (y == null ? -1e9 : +y)); });
+    const total = rows.length; if (!showAll) rows = rows.slice(0, PAGE);
+    const more = $("more"); more.hidden = total <= PAGE; more.textContent = showAll ? "Show fewer" : `Show all ${total} stocks`; more.setAttribute("aria-expanded", String(showAll));
+    $("all").innerHTML = `<thead><tr>${COLS.map(([k, l]) => `<th data-k="${k}" ${k === sortK ? `aria-sort="${sortDir > 0 ? "ascending" : "descending"}"` : ""} tabindex="0">${l}</th>`).join("")}</tr></thead><tbody>${rows.map(s => `<tr>${COLS.map(c => `<td>${c[2](s)}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${COLS.length}" style="color:var(--muted)">No stocks match.</td></tr>`}</tbody>`;
+  }
+  $("all").addEventListener("click", (e) => { const th = e.target.closest("th[data-k]"); if (!th) return; const k = th.dataset.k; sortDir = k === sortK ? -sortDir : (k === "symbol" || k === "sector_short" ? 1 : -1); sortK = k; renderAll(); });
+  $("all").addEventListener("keydown", (e) => { if (e.key === "Enter") { const th = e.target.closest("th[data-k]"); if (th) th.click(); } });
+  $("flt").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; filt = b.dataset.f; $("flt").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderAll(); });
+  $("more").addEventListener("click", () => { showAll = !showAll; renderAll(); });
+  $("q").addEventListener("input", (e) => { q = e.target.value.trim().toLowerCase(); renderAll(); });
+  $("all-sub").textContent = `${M.above50} of ${M.valid50} above the 50 DMA · ${stocks.filter(s => s.leader).length} pass the leader rules. Tap a column to sort.`;
+  renderAll();
+
+  /* ---------- alerts ---------- */
+  const ATONE = {welcome:"best", mode_change:"good", thrust:"best", new_stock:"best", exits:"warn", index_change:"neutral", summary:"neutral"};
+  const wa = (t) => esc(t).replace(/\*([^*\n]+)\*/g, "<b>$1</b>").replace(/(^|\s)_([^_\n]+)_/g, "$1<i>$2</i>");
+  const al = D.alerts || [];
+  $("alerts").innerHTML = al.length ? al.map(a => {
+    let t = ATONE[a.type] || "neutral";
+    if (a.type === "mode_change" || a.type === "summary") { const m = /(?:→ |^Close: )(.+?)(?: · |$)/.exec(a.title || ""); const k = Object.keys(REG).find(k => m && REG[k].label === m[1]); if (k) t = REG[k].tone; }
+    return `<details class="alert tone-${t}"><summary><span class="dt">${esc(dfmt(a.date, {day:"2-digit", month:"short"}))}</span><span class="gl" aria-hidden="true"></span><span class="tt">${esc(a.title)}</span><span class="sent">${a.sent ? "sent" : "logged"}</span></summary><div class="msg">${wa(a.text)}</div></details>`;
+  }).join("") : `<p class="empty">No alerts yet. The first one arrives after the first run.</p>`;
+
+  /* ---------- method ---------- */
+  const B = S.breadth || {}, L = S.leaders || {}, FU = S.fundamentals || {};
+  $("method").innerHTML = `
+    <dl>
+      <dt style="color:var(--best)">Best time</dt><dd>${B.best_zone_min}%+ of Nifty 50 stocks above their 50 DMA, breadth not falling, Nifty above its own 50 DMA.</dd>
+      <dt style="color:var(--best)">Breadth thrust</dt><dd>Breadth jumps from ${B.thrust_from}% or less to ${B.thrust_to}%+ within ${B.thrust_window} sessions. Rare and strong.</dd>
+      <dt style="color:var(--good)">Good</dt><dd>${B.good_zone_min}%+ and rising over ${B.momentum_days} sessions.</dd>
+      <dt style="color:var(--good)">Early reversal</dt><dd>${B.oversold_max}% or less but up ${B.reversal_jump}+ points in ${B.momentum_days} sessions.</dd>
+      <dt style="color:var(--warn)">Overheated</dt><dd>${B.overheated_min}%+ above the 50 DMA. Don't chase.</dd>
+      <dt style="color:var(--warn)">Fading</dt><dd>${B.good_zone_min}%+ but down 5+ points in ${B.momentum_days} sessions.</dd>
+      <dt style="color:var(--bad)">Avoid</dt><dd>Below ${B.weak_zone_max}% and falling.</dd>
+    </dl>
+    <p class="sub" style="margin-top:10px">A new mode must hold for two sessions before it's confirmed and alerted, so one noisy day doesn't flip it.</p>
+    <h3>Watchlist rules</h3>
+    <ul>
+      <li>Sector has ${minB}%+ of its stocks above the 50 DMA</li>
+      <li>Price above the 50 DMA, 50 DMA above the 200 DMA and rising over ${L.slope_days} sessions</li>
+      <li>Beating Nifty over ${L.rs_lookback_days} sessions, within ${L.max_off_52w_high_pct}% of the 52-week high</li>
+      <li>Stays listed until it closes ${L.exit_buffer_pct}% below its 50 DMA or sector breadth drops under ${(S.sectors || {}).exit_breadth_pct}%</li>
+    </ul>
+    <h3>Fundamental check</h3>
+    <ul>
+      <li>Debt / equity below ${FU.max_debt_to_equity} (not applied to banks, NBFCs, insurers)</li>
+      <li>Sales growth ${FU.min_sales_cagr_3y_pct}%+ a year over 3 years · promoter pledge 0% · profitable</li>
+      <li>Profit growth ${FU.min_profit_cagr_3y_pct}%+ a year over 3 years · Piotroski ${FU.min_piotroski}+ of 9 · market cap above ₹${nf(FU.min_market_cap_cr)} Cr</li>
+    </ul>`;
+})();
+</script>
+</body></html>

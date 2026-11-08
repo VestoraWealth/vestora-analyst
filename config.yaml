@@ -49,8 +49,12 @@ fundamentals:
   cache_days: 7                # re-check fundamentals of a stock at most once a week
   pledge_overrides: {}         # e.g.  ADANIENT: 0.0   (promoter pledge %, if you know it)
 
-# ---------- WhatsApp alerts ----------
+# ---------- Alerts (WhatsApp and email) ----------
 alerts:
+  whatsapp: true               # send alerts by WhatsApp
+  email: true                  # also send one email per run (needs EMAIL_ADDRESS + EMAIL_APP_PASSWORD secrets)
+  # Email secrets: EMAIL_ADDRESS (your Gmail), EMAIL_APP_PASSWORD (Google app password),
+  #                EMAIL_TO (optional: a different address to receive the alerts)
   provider: textmebot          # textmebot (paid, sends from your linked WhatsApp), callmebot (free) or twilio
   # The phone number and keys are NOT written here. They are stored as
   # GitHub "Secrets" (see SETUP_GUIDE.md):

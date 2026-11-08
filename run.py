@@ -3,7 +3,7 @@
 Usage
   python run.py                 normal run (downloads data, sends WhatsApp alerts)
   python run.py --dry-run       everything except sending WhatsApp (prints messages)
-  python run.py --test-whatsapp send one test message and stop
+  python run.py --test-alerts   send one test message (WhatsApp + email) and stop
   python run.py --demo          simulated data, no internet needed, nothing sent
   python run.py --force         treat today as a new session even if already processed
 """
@@ -106,7 +106,11 @@ def run_once(close, nifty, constituents, state, cfg, fund_fn, *, today: date,
     if new_session:
         events = notify.detect_events(state, res, constituents, cfg)
         messages = notify.compose(events, res, cache, cfg, url, new_session=True)
-        delivery = notify.deliver([m["text"] for m in messages], cfg, dry_run=dry_run)
+        m0 = res["market"]
+        subject = f"VESTORA ANALYST · {datetime.strptime(res['asof'], '%Y-%m-%d').strftime('%d %b')} · {m0['regime_label']}"
+        if any(m["type"] == "new_stock" for m in messages):
+            subject += " · new stock"
+        delivery = notify.deliver([m["text"] for m in messages], cfg, dry_run=dry_run, subject=subject)
     else:
         log.info("No new trading session since %s — no alerts sent.", state.get("asof"))
 
@@ -150,7 +154,8 @@ def main(argv=None) -> int:
     ap.add_argument("--demo", action="store_true", help="use simulated data (no internet)")
     ap.add_argument("--dry-run", action="store_true", help="don't send WhatsApp messages")
     ap.add_argument("--force", action="store_true", help="process even if no new session")
-    ap.add_argument("--test-whatsapp", action="store_true", help="send a test message and exit")
+    ap.add_argument("--test-alerts", "--test-whatsapp", dest="test_alerts", action="store_true",
+                    help="send a test message by WhatsApp and email, then exit")
     ap.add_argument("--replay", type=int, default=0, help="(demo) replay the last N sessions to build alert history")
     ap.add_argument("--out", default=str(DOCS), help="output folder for the dashboard")
     ap.add_argument("--state", default=str(STATE_FILE), help="state file")
@@ -164,8 +169,9 @@ def main(argv=None) -> int:
     today = datetime.now(IST).date()
     url = dashboard_url()
 
-    if args.test_whatsapp:
-        res = notify.deliver([f"*VESTORA ANALYST* ✅ Test message — WhatsApp alerts are working.\n{url}".strip()], cfg)
+    if args.test_alerts:
+        res = notify.deliver([f"*VESTORA ANALYST* ✅ Test message — your alerts are working.\n{url}".strip()],
+                             cfg, subject="VESTORA ANALYST · test message")
         return 0 if res and res[0]["ok"] else 1
 
     if args.demo:

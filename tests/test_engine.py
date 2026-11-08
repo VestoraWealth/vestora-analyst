@@ -304,3 +304,59 @@ def test_textmebot_request(monkeypatch):
     assert out[0]["ok"] is True
     assert sent["url"] == "https://api.textmebot.com/send.php"
     assert sent["recipient"] == "+919048595992" and sent["apikey"] == "abc123"
+
+
+def test_email_alert(monkeypatch):
+    import smtplib
+    sent = {}
+
+    class FakeSMTP:
+        def __init__(self, host, port, context=None, timeout=None):
+            sent["host"], sent["port"] = host, port
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+        def login(self, user, pw):
+            sent["login"] = (user, pw)
+        def send_message(self, msg):
+            sent["msg"] = msg
+
+    monkeypatch.setattr(smtplib, "SMTP_SSL", FakeSMTP)
+    monkeypatch.delenv("WHATSAPP_PHONE", raising=False)
+    monkeypatch.setenv("EMAIL_ADDRESS", "me@gmail.com")
+    monkeypatch.setenv("EMAIL_APP_PASSWORD", "abcd efgh ijkl mnop")
+    out = notify.deliver(["*VESTORA ANALYST* one", "two"], CFG, subject="VESTORA ANALYST · test")
+    assert all(r["ok"] for r in out)
+    assert sent["host"] == "smtp.gmail.com" and sent["port"] == 465
+    assert sent["login"] == ("me@gmail.com", "abcdefghijklmnop")  # spaces removed
+    msg = sent["msg"]
+    assert msg["To"] == "me@gmail.com" and msg["Subject"] == "VESTORA ANALYST · test"
+    html = msg.get_body(("html",)).get_content()
+    assert "<b>VESTORA ANALYST</b> one" in html and "two" in html
+
+
+def test_whatsapp_failure_still_delivered_by_email(monkeypatch):
+    import smtplib
+
+    class OkSMTP:
+        def __init__(self, *a, **k): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def login(self, *a): pass
+        def send_message(self, m): pass
+
+    class Resp:
+        status_code = 411
+        text = "Error: Phone number is disconnected from the API"
+
+    monkeypatch.setattr(smtplib, "SMTP_SSL", OkSMTP)
+    monkeypatch.setitem(sys.modules, "requests", types.SimpleNamespace(get=lambda *a, **k: Resp()))
+    monkeypatch.setattr(notify.time, "sleep", lambda s: None)
+    monkeypatch.setenv("WHATSAPP_PHONE", "+919048595992")
+    monkeypatch.setenv("TEXTMEBOT_APIKEY", "x")
+    monkeypatch.setenv("EMAIL_ADDRESS", "me@gmail.com")
+    monkeypatch.setenv("EMAIL_APP_PASSWORD", "pw")
+    out = notify.deliver(["a", "b"], CFG)
+    assert [r["ok"] for r in out] == [True, True]
+    assert "whatsapp: failed" in out[0]["detail"] and "email: sent" in out[0]["detail"]

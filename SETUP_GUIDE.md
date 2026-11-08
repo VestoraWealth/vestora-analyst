@@ -53,6 +53,21 @@ In your repository: **Settings → Secrets and variables → Actions → New rep
 
 Secrets are hidden from everyone, including on a public repository.
 
+## Step 4b — Email alerts (recommended, works alongside WhatsApp)
+
+Every run also sends **one email** with the same alerts.
+
+1. Your Google account needs **2-Step Verification** turned on (myaccount.google.com → Security).
+2. Open **myaccount.google.com/apppasswords**, type the name `Vestora Analyst`, and tap **Create**. Google shows a 16-letter password. Copy it.
+3. In GitHub, add two more secrets:
+
+| Name | Value |
+|---|---|
+| `EMAIL_ADDRESS` | your Gmail address |
+| `EMAIL_APP_PASSWORD` | the 16-letter app password |
+
+Optional: add `EMAIL_TO` if the alerts should go to a different address.
+
 ## Step 5 — Switch on the dashboard
 
 **Settings → Pages → Build and deployment → Source: GitHub Actions.**
@@ -60,7 +75,7 @@ Secrets are hidden from everyone, including on a public repository.
 ## Step 6 — First run
 
 1. Open the **Actions** tab. If GitHub asks, click **I understand my workflows, go ahead and enable them**.
-2. Click **Vestora Analyst** on the left → **Run workflow** → mode **test-whatsapp** → **Run workflow**.
+2. Click **Vestora Analyst** on the left → **Run workflow** → mode **test-alerts** → **Run workflow**.
    Within a minute 9048595992 should get "Test message — WhatsApp alerts are working." from the company number.
 3. Run it again with mode **normal**. You'll get the welcome message with today's market mode and watchlist, and the dashboard goes live at
    `https://<your-github-name>.github.io/vestora-analyst/` (the link also appears in the run's summary).
@@ -68,6 +83,8 @@ Secrets are hidden from everyone, including on a public repository.
 From now on it runs by itself every weekday after market close.
 
 ---
+
+Need today's update again? Run the workflow with mode **send-now**.
 
 ## Changing the rules
 

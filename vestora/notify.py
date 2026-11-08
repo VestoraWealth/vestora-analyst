@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import os
 import time
 from datetime import datetime
@@ -253,32 +254,97 @@ def send_twilio(phone: str, text: str) -> tuple[bool, str]:
         return False, str(exc)
 
 
-def deliver(messages: list[str], cfg: dict, dry_run: bool = False) -> list[dict]:
-    """Send messages over WhatsApp. Returns a log entry per message."""
-    phone = os.environ.get("WHATSAPP_PHONE", "").strip()
+def _wa_to_html(text: str) -> str:
+    import html as _h
+    t = _h.escape(text)
+    t = re.sub(r"\*([^*\n]+)\*", r"<b>\1</b>", t)
+    t = re.sub(r"(^|\s)_([^_\n]+)_", r"\1<i>\2</i>", t)
+    t = re.sub(r"(https?://[^\s<]+)", r'<a href="\1" style="color:#B8860B">\1</a>', t)
+    return t.replace("\n", "<br>")
+
+
+def send_email(subject: str, parts: list[str]) -> tuple[bool, str]:
+    """One email per run, through Gmail (or any SMTP server) with an app password."""
+    import smtplib
+    import ssl
+    from email.message import EmailMessage
+    user = os.environ.get("EMAIL_ADDRESS", "").strip()
+    pw = os.environ.get("EMAIL_APP_PASSWORD", "").replace(" ", "").strip()
+    to = os.environ.get("EMAIL_TO", "").strip() or user
+    if not (user and pw):
+        return False, "EMAIL_ADDRESS / EMAIL_APP_PASSWORD not set"
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = f"VESTORA ANALYST <{user}>"
+    msg["To"] = to
+    plain = "\n\n----------------------------------------\n\n".join(re.sub(r"\*([^*\n]+)\*", r"\1", p) for p in parts)
+    msg.set_content(plain)
+    blocks = "".join(
+        f'<div style="padding:16px 0;border-top:1px solid #E6DCC8;font-size:15px;line-height:1.55">{_wa_to_html(p)}</div>'
+        for p in parts)
+    msg.add_alternative(
+        '<div style="background:#F8F3E9;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#2A1A0B">'
+        '<div style="max-width:640px;margin:0 auto;background:#FFFDF8;border:1px solid #E6DCC8;border-radius:12px;overflow:hidden">'
+        '<div style="background:#2A1A0B;color:#D4AF37;padding:16px 20px;font-weight:bold;letter-spacing:3px;font-size:18px">'
+        'VESTORA ANALYST</div>'
+        f'<div style="padding:4px 20px 16px">{blocks}</div>'
+        '<div style="padding:12px 20px;font-size:12px;color:#857055;border-top:1px solid #E6DCC8">'
+        'For research and education only. Not investment advice.</div></div></div>',
+        subtype="html")
+    host = os.environ.get("EMAIL_SMTP_HOST", "smtp.gmail.com").strip() or "smtp.gmail.com"
+    port = int(os.environ.get("EMAIL_SMTP_PORT", "465") or 465)
+    try:
+        with smtplib.SMTP_SSL(host, port, context=ssl.create_default_context(), timeout=30) as smtp:
+            smtp.login(user, pw)
+            smtp.send_message(msg)
+        return True, f"emailed {to}"
+    except Exception as exc:
+        return False, f"{type(exc).__name__}: {exc}"
+
+
+def _send_whatsapp(phone: str, text: str, cfg: dict) -> tuple[bool, str]:
     provider = cfg["alerts"].get("provider", "textmebot").lower()
-    results = []
-    for i, text in enumerate(messages):
-        if dry_run or not phone:
-            reason = "dry run" if dry_run else "WHATSAPP_PHONE not set"
-            log.info("[WhatsApp %s] would send:\n%s\n", reason, text)
-            results.append({"ok": False, "detail": reason})
-            continue
-        if provider == "twilio":
-            ok, detail = send_twilio(phone, text)
-        elif provider == "textmebot":
-            key = os.environ.get("TEXTMEBOT_APIKEY", "").strip()
-            if not key:
-                ok, detail = False, "TEXTMEBOT_APIKEY not set"
-            else:
-                ok, detail = send_textmebot(phone, key, text)
+    if provider == "twilio":
+        return send_twilio(phone, text)
+    if provider == "textmebot":
+        key = os.environ.get("TEXTMEBOT_APIKEY", "").strip()
+        return send_textmebot(phone, key, text) if key else (False, "TEXTMEBOT_APIKEY not set")
+    key = os.environ.get("CALLMEBOT_APIKEY", "").strip()
+    return send_callmebot(phone, key, text) if key else (False, "CALLMEBOT_APIKEY not set")
+
+
+def deliver(messages: list[str], cfg: dict, dry_run: bool = False,
+            subject: str = "VESTORA ANALYST") -> list[dict]:
+    """Send messages by WhatsApp (one message each) and email (one email for the batch).
+
+    A message counts as delivered when at least one channel succeeded.
+    """
+    ac = cfg["alerts"]
+    results = [{"ok": False, "detail": ""} for _ in messages]
+    if not messages:
+        return results
+    if dry_run:
+        for text in messages:
+            log.info("[dry run] would send:\n%s\n", text)
+        return [{"ok": False, "detail": "dry run"} for _ in messages]
+
+    if ac.get("whatsapp", True):
+        phone = os.environ.get("WHATSAPP_PHONE", "").strip()
+        if not phone:
+            log.info("WhatsApp skipped: WHATSAPP_PHONE not set")
         else:
-            key = os.environ.get("CALLMEBOT_APIKEY", "").strip()
-            if not key:
-                ok, detail = False, "CALLMEBOT_APIKEY not set"
-            else:
-                ok, detail = send_callmebot(phone, key, text)
-        log.info("WhatsApp message %d/%d: %s (%s)", i + 1, len(messages), "sent" if ok else "FAILED", detail)
-        results.append({"ok": ok, "detail": detail})
-        time.sleep(7)  # leave a gap between messages so WhatsApp doesn't treat them as spam
+            for i, text in enumerate(messages):
+                ok, detail = _send_whatsapp(phone, text, cfg)
+                log.info("WhatsApp message %d/%d: %s (%s)", i + 1, len(messages), "sent" if ok else "FAILED", detail)
+                results[i]["ok"] |= ok
+                results[i]["detail"] += f"whatsapp: {'sent' if ok else 'failed'}; "
+                if i < len(messages) - 1:
+                    time.sleep(7)  # gap between messages so WhatsApp doesn't treat them as spam
+
+    if ac.get("email", True):
+        ok, detail = send_email(subject, messages)
+        log.info("Email: %s (%s)", "sent" if ok else "FAILED", detail)
+        for r in results:
+            r["ok"] |= ok
+            r["detail"] += f"email: {'sent' if ok else 'failed'}; "
     return results

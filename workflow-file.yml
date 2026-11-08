@@ -13,7 +13,8 @@ on:
         default: normal
         options:
           - normal
-          - test-whatsapp
+          - test-alerts
+          - send-now
           - dry-run
 
 permissions:
@@ -53,16 +54,20 @@ jobs:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
           DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
         run: |
           case "${{ inputs.mode }}" in
-            test-whatsapp) python run.py --test-whatsapp ;;
+            test-alerts|test-whatsapp) python run.py --test-alerts ;;
+            send-now)      python run.py --force ;;
             dry-run)       python run.py --dry-run --force ;;
             *)             python run.py ;;
           esac
 
       - name: Save the analyser's memory (state + dashboard)
-        if: inputs.mode != 'test-whatsapp' && inputs.mode != 'dry-run'
+        if: inputs.mode != 'test-alerts' && inputs.mode != 'dry-run'
         run: |
           git config user.name "vestora-analyst-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -75,16 +80,16 @@ jobs:
           fi
 
       - name: Prepare dashboard for GitHub Pages
-        if: inputs.mode != 'test-whatsapp'
+        if: inputs.mode != 'test-alerts'
         uses: actions/configure-pages@v5
 
       - name: Upload dashboard
-        if: inputs.mode != 'test-whatsapp'
+        if: inputs.mode != 'test-alerts'
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
 
       - name: Publish dashboard
-        if: inputs.mode != 'test-whatsapp'
+        if: inputs.mode != 'test-alerts'
         id: deployment
         uses: actions/deploy-pages@v4

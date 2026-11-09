@@ -1,7 +1,16 @@
 {
- "asof": "2026-11-06",
+ "asof": "2026-11-09",
  "regime": "THRUST",
  "watchlist": [
+  "KOTAKBANK",
+  "ADANIPORTS",
+  "ETERNAL",
+  "TECHM",
+  "ICICIBANK",
+  "JSWSTEEL",
+  "HCLTECH"
+ ],
+ "prev_watchlist": [
   "KOTAKBANK",
   "ADANIPORTS",
   "ETERNAL",
@@ -10,7 +19,6 @@
   "HCLTECH",
   "ICICIBANK"
  ],
- "prev_watchlist": null,
  "constituents": [
   "ADANIENT",
   "ADANIPORTS",
@@ -617,6 +625,13 @@
    "type": "welcome",
    "title": "Analyser started",
    "text": "*VESTORA ANALYST* · 06 Nov 2026\n✅ Analyser is live. You'll get alerts here.\n\n🟢 Market mode: *BREADTH THRUST*\nNifty 50 above 50 DMA: *44/50 (88%)* ▲52 pts in 5 days\nAbove 200 DMA: 30/50 (60%)\nSwing score: *63/100*\nNifty: 25,030 (+2.01%), above 50 DMA\n\nStrong sectors: IT 4/4, Telecom 1/1, Cement & Materials 2/2\nWatchlist (7): KOTAKBANK, ADANIPORTS, ETERNAL, TECHM, JSWSTEEL, HCLTECH, ICICIBANK\n\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-09",
+   "type": "summary",
+   "title": "Close: BREADTH THRUST · 92% above 50 DMA",
+   "text": "*VESTORA ANALYST — 09 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 64)\nNifty 50 above 50 DMA: *46/50 (92%)* ▲44 pts in 5 days\nAbove 200 DMA: 30/50 (60%)\nStrong sectors: IT 4/4, Construction 1/1, Telecom 1/1\nWatchlist (7): KOTAKBANK, ADANIPORTS, ETERNAL, TECHM, ICICIBANK, JSWSTEEL, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],

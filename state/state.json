@@ -1,13 +1,14 @@
 {
- "asof": "2026-11-09",
+ "asof": "2026-11-11",
  "regime": "THRUST",
  "watchlist": [
-  "KOTAKBANK",
-  "ADANIPORTS",
   "ETERNAL",
+  "ADANIPORTS",
   "TECHM",
-  "ICICIBANK",
+  "KOTAKBANK",
   "JSWSTEEL",
+  "ICICIBANK",
+  "BHARTIARTL",
   "HCLTECH"
  ],
  "prev_watchlist": [
@@ -15,9 +16,9 @@
   "ADANIPORTS",
   "ETERNAL",
   "TECHM",
+  "ICICIBANK",
   "JSWSTEEL",
-  "HCLTECH",
-  "ICICIBANK"
+  "HCLTECH"
  ],
  "constituents": [
   "ADANIENT",
@@ -617,6 +618,84 @@
    },
    "pledge_source": "NSE pledge disclosures",
    "checked": "2026-11-06"
+  },
+  "BHARTIARTL": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 1.31,
+     "display": "1.31",
+     "status": "fail",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 14.9,
+     "display": "14.9%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.56,
+     "display": "0.56%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 26695.0,
+     "display": "₹26,695 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": 47.3,
+     "display": "47.3%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 8,
+     "display": "8/9",
+     "status": "pass",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 1316494.0,
+     "display": "₹13.16 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 4,
+   "failed": 3,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": true,
+    "Current ratio improving": true,
+    "No new shares issued": true,
+    "Gross margin improving": true,
+    "Asset turnover improving": true
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-11"
   }
  },
  "alerts_log": [
@@ -633,6 +712,20 @@
    "title": "Close: BREADTH THRUST · 92% above 50 DMA",
    "text": "*VESTORA ANALYST — 09 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 64)\nNifty 50 above 50 DMA: *46/50 (92%)* ▲44 pts in 5 days\nAbove 200 DMA: 30/50 (60%)\nStrong sectors: IT 4/4, Construction 1/1, Telecom 1/1\nWatchlist (7): KOTAKBANK, ADANIPORTS, ETERNAL, TECHM, ICICIBANK, JSWSTEEL, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
+  },
+  {
+   "date": "2026-11-11",
+   "type": "new_stock",
+   "title": "New in watchlist: BHARTIARTL",
+   "text": "*VESTORA ANALYST* · 11 Nov 2026\n⭐ *New stock in watchlist: BHARTIARTL*\nBharti Airtel Ltd. · Telecom\n₹2,109 | +12.4% vs 50 DMA | RS +5.8% vs Nifty (3M) | 1.3% off 52W high\n_extended — wait for pullback_\n\nFundamentals: *4/7 passed* — WEAK\n❌ Debt / Equity: 1.31\n❌ Sales growth (3Y CAGR): 14.9%\n❌ Promoter pledge: 0.56%\n✅ Profitable: ₹26,695 Cr profit\n✅ Profit growth (3Y CAGR): 47.3%\n✅ Piotroski score: 8/9\n✅ Market cap: ₹13.16 L Cr\n\nMarket mode: BREADTH THRUST",
+   "sent": false
+  },
+  {
+   "date": "2026-11-11",
+   "type": "summary",
+   "title": "Close: BREADTH THRUST · 94% above 50 DMA",
+   "text": "*VESTORA ANALYST — 11 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 65)\nNifty 50 above 50 DMA: *47/50 (94%)* ▲40 pts in 5 days\nAbove 200 DMA: 31/50 (62%)\nStrong sectors: IT 4/4, Telecom 1/1, Auto 5/5\nWatchlist (8): ETERNAL, ADANIPORTS, TECHM, KOTAKBANK, JSWSTEEL, ICICIBANK, BHARTIARTL, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
   }
  ],
  "first_seen": {
@@ -642,6 +735,7 @@
   "TECHM": "2026-11-06",
   "JSWSTEEL": "2026-11-06",
   "HCLTECH": "2026-11-06",
-  "ICICIBANK": "2026-11-06"
+  "ICICIBANK": "2026-11-06",
+  "BHARTIARTL": "2026-11-11"
  }
 }

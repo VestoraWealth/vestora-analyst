@@ -1,7 +1,18 @@
 {
- "asof": "2026-11-11",
+ "asof": "2026-11-12",
  "regime": "THRUST",
  "watchlist": [
+  "ADANIPORTS",
+  "ETERNAL",
+  "KOTAKBANK",
+  "TECHM",
+  "BHARTIARTL",
+  "ICICIBANK",
+  "JSWSTEEL",
+  "INDIGO",
+  "HCLTECH"
+ ],
+ "prev_watchlist": [
   "ETERNAL",
   "ADANIPORTS",
   "TECHM",
@@ -9,15 +20,6 @@
   "JSWSTEEL",
   "ICICIBANK",
   "BHARTIARTL",
-  "HCLTECH"
- ],
- "prev_watchlist": [
-  "KOTAKBANK",
-  "ADANIPORTS",
-  "ETERNAL",
-  "TECHM",
-  "ICICIBANK",
-  "JSWSTEEL",
   "HCLTECH"
  ],
  "constituents": [
@@ -696,6 +698,84 @@
    },
    "pledge_source": "NSE pledge disclosures",
    "checked": "2026-11-11"
+  },
+  "INDIGO": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 11.15,
+     "display": "11.15",
+     "status": "fail",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 15.6,
+     "display": "15.6%",
+     "status": "pass",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.0,
+     "display": "0.00%",
+     "status": "pass",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": -2392.0,
+     "display": "Loss ₹2,392 Cr",
+     "status": "fail",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": null,
+     "display": "loss in latest year",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 5,
+     "display": "5/8 (adj.)",
+     "status": "fail",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 218854.0,
+     "display": "₹2.19 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 3,
+   "failed": 4,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": false,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": null,
+    "Current ratio improving": true,
+    "No new shares issued": true,
+    "Gross margin improving": true,
+    "Asset turnover improving": false
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-12"
   }
  },
  "alerts_log": [
@@ -726,6 +806,20 @@
    "title": "Close: BREADTH THRUST · 94% above 50 DMA",
    "text": "*VESTORA ANALYST — 11 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 65)\nNifty 50 above 50 DMA: *47/50 (94%)* ▲40 pts in 5 days\nAbove 200 DMA: 31/50 (62%)\nStrong sectors: IT 4/4, Telecom 1/1, Auto 5/5\nWatchlist (8): ETERNAL, ADANIPORTS, TECHM, KOTAKBANK, JSWSTEEL, ICICIBANK, BHARTIARTL, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
+  },
+  {
+   "date": "2026-11-12",
+   "type": "new_stock",
+   "title": "New in watchlist: INDIGO",
+   "text": "*VESTORA ANALYST* · 12 Nov 2026\n⭐ *New stock in watchlist: INDIGO*\nInterGlobe Aviation Ltd. · Services\n₹5,660 | +14.6% vs 50 DMA | RS +3.7% vs Nifty (3M) | 4.4% off 52W high\n_extended — wait for pullback_\n\nFundamentals: *3/7 passed* — WEAK\n❌ Debt / Equity: 11.15\n✅ Sales growth (3Y CAGR): 15.6%\n✅ Promoter pledge: 0.00%\n❌ Profitable: Loss ₹2,392 Cr\n❌ Profit growth (3Y CAGR): loss in latest year\n❌ Piotroski score: 5/8 (adj.)\n✅ Market cap: ₹2.19 L Cr\n\nMarket mode: BREADTH THRUST",
+   "sent": false
+  },
+  {
+   "date": "2026-11-12",
+   "type": "summary",
+   "title": "Close: BREADTH THRUST · 96% above 50 DMA",
+   "text": "*VESTORA ANALYST — 12 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 77)\nNifty 50 above 50 DMA: *48/50 (96%)* ▲34 pts in 5 days\nAbove 200 DMA: 33/50 (66%)\nStrong sectors: Telecom 1/1, IT 4/4, Construction 1/1\nWatchlist (9): ADANIPORTS, ETERNAL, KOTAKBANK, TECHM, BHARTIARTL, ICICIBANK, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
   }
  ],
  "first_seen": {
@@ -736,6 +830,7 @@
   "JSWSTEEL": "2026-11-06",
   "HCLTECH": "2026-11-06",
   "ICICIBANK": "2026-11-06",
-  "BHARTIARTL": "2026-11-11"
+  "BHARTIARTL": "2026-11-11",
+  "INDIGO": "2026-11-12"
  }
 }

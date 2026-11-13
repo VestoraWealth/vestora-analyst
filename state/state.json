@@ -1,9 +1,9 @@
 {
- "asof": "2026-11-12",
- "regime": "THRUST",
+ "asof": "2026-11-13",
+ "regime": "OVERHEATED",
  "watchlist": [
-  "ADANIPORTS",
   "ETERNAL",
+  "ADANIPORTS",
   "KOTAKBANK",
   "TECHM",
   "BHARTIARTL",
@@ -13,13 +13,14 @@
   "HCLTECH"
  ],
  "prev_watchlist": [
-  "ETERNAL",
   "ADANIPORTS",
-  "TECHM",
+  "ETERNAL",
   "KOTAKBANK",
-  "JSWSTEEL",
-  "ICICIBANK",
+  "TECHM",
   "BHARTIARTL",
+  "ICICIBANK",
+  "JSWSTEEL",
+  "INDIGO",
   "HCLTECH"
  ],
  "constituents": [
@@ -96,8 +97,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.72,
-     "display": "0.72%",
+     "value": 0.68,
+     "display": "0.68%",
      "status": "fail",
      "rule": "0%"
     },
@@ -128,8 +129,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 477498.0,
-     "display": "₹4.77 L Cr",
+     "value": 486027.0,
+     "display": "₹4.86 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -151,7 +152,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "ADANIPORTS": {
    "checks": [
@@ -206,8 +207,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 446185.0,
-     "display": "₹4.46 L Cr",
+     "value": 438513.0,
+     "display": "₹4.39 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -229,7 +230,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "ETERNAL": {
    "checks": [
@@ -284,7 +285,7 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 334562.0,
+     "value": 335023.0,
      "display": "₹3.35 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
@@ -307,7 +308,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "TECHM": {
    "checks": [
@@ -330,8 +331,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.46,
-     "display": "0.46%",
+     "value": 0.5,
+     "display": "0.50%",
      "status": "fail",
      "rule": "0%"
     },
@@ -362,8 +363,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 179476.0,
-     "display": "₹1.79 L Cr",
+     "value": 172908.0,
+     "display": "₹1.73 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -385,7 +386,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "JSWSTEEL": {
    "checks": [
@@ -440,8 +441,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 331265.0,
-     "display": "₹3.31 L Cr",
+     "value": 329166.0,
+     "display": "₹3.29 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -463,7 +464,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "HCLTECH": {
    "checks": [
@@ -486,8 +487,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.28,
-     "display": "0.28%",
+     "value": 0.3,
+     "display": "0.30%",
      "status": "fail",
      "rule": "0%"
     },
@@ -518,8 +519,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 389754.0,
-     "display": "₹3.90 L Cr",
+     "value": 372973.0,
+     "display": "₹3.73 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -541,7 +542,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "ICICIBANK": {
    "checks": [
@@ -564,8 +565,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 1.03,
-     "display": "1.03%",
+     "value": 0.86,
+     "display": "0.86%",
      "status": "fail",
      "rule": "0%"
     },
@@ -596,8 +597,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 1128250.0,
-     "display": "₹11.28 L Cr",
+     "value": 1137160.0,
+     "display": "₹11.37 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -619,7 +620,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-06"
+   "checked": "2026-11-13"
   },
   "BHARTIARTL": {
    "checks": [
@@ -819,6 +820,20 @@
    "type": "summary",
    "title": "Close: BREADTH THRUST · 96% above 50 DMA",
    "text": "*VESTORA ANALYST — 12 Nov 2026 close*\n🟢 Mode: *BREADTH THRUST* (score 77)\nNifty 50 above 50 DMA: *48/50 (96%)* ▲34 pts in 5 days\nAbove 200 DMA: 33/50 (66%)\nStrong sectors: Telecom 1/1, IT 4/4, Construction 1/1\nWatchlist (9): ADANIPORTS, ETERNAL, KOTAKBANK, TECHM, BHARTIARTL, ICICIBANK, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-13",
+   "type": "mode_change",
+   "title": "Mode: BREADTH THRUST → OVERHEATED — DON'T CHASE",
+   "text": "*VESTORA ANALYST* · 13 Nov 2026\n🟠 Market mode changed: *OVERHEATED — DON'T CHASE*\n(was BREADTH THRUST)\n\nNifty 50 above 50 DMA: *44/50 (88%)* ▲6 pts in 5 days\nAbove 200 DMA: 32/50 (64%)\nSwing score: *65/100*\nNifty: 25,144 (-0.61%), above 50 DMA\n\nMost stocks are already stretched above their 50 DMA. Book partial profits, trail stops and wait for a pullback before new entries.\n\nTop sectors: Telecom 1/1, Construction 1/1, Services 2/2",
+   "sent": false
+  },
+  {
+   "date": "2026-11-13",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 88% above 50 DMA",
+   "text": "*VESTORA ANALYST — 13 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 65)\nNifty 50 above 50 DMA: *44/50 (88%)* ▲6 pts in 5 days\nAbove 200 DMA: 32/50 (64%)\nStrong sectors: Telecom 1/1, Construction 1/1, Services 2/2\nWatchlist (9): ETERNAL, ADANIPORTS, KOTAKBANK, TECHM, BHARTIARTL, ICICIBANK, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],

@@ -1,5 +1,5 @@
 {
- "asof": "2026-11-13",
+ "asof": "2026-11-16",
  "regime": "OVERHEATED",
  "watchlist": [
   "ETERNAL",
@@ -13,8 +13,8 @@
   "HCLTECH"
  ],
  "prev_watchlist": [
-  "ADANIPORTS",
   "ETERNAL",
+  "ADANIPORTS",
   "KOTAKBANK",
   "TECHM",
   "BHARTIARTL",
@@ -834,6 +834,13 @@
    "type": "summary",
    "title": "Close: OVERHEATED — DON'T CHASE · 88% above 50 DMA",
    "text": "*VESTORA ANALYST — 13 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 65)\nNifty 50 above 50 DMA: *44/50 (88%)* ▲6 pts in 5 days\nAbove 200 DMA: 32/50 (64%)\nStrong sectors: Telecom 1/1, Construction 1/1, Services 2/2\nWatchlist (9): ETERNAL, ADANIPORTS, KOTAKBANK, TECHM, BHARTIARTL, ICICIBANK, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-16",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 88% above 50 DMA",
+   "text": "*VESTORA ANALYST — 16 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 62)\nNifty 50 above 50 DMA: *44/50 (88%)* ▲0 pts in 5 days\nAbove 200 DMA: 35/50 (70%)\nStrong sectors: Telecom 1/1, Construction 1/1, Services 2/2\nWatchlist (9): ETERNAL, ADANIPORTS, KOTAKBANK, TECHM, BHARTIARTL, ICICIBANK, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],

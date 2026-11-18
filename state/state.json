@@ -1,24 +1,24 @@
 {
- "asof": "2026-11-17",
+ "asof": "2026-11-18",
  "regime": "OVERHEATED",
  "watchlist": [
+  "DRREDDY",
+  "ETERNAL",
   "ADANIPORTS",
   "KOTAKBANK",
-  "ETERNAL",
   "TECHM",
   "ICICIBANK",
   "BHARTIARTL",
-  "JSWSTEEL",
   "INDIGO",
   "HCLTECH"
  ],
  "prev_watchlist": [
-  "ETERNAL",
   "ADANIPORTS",
   "KOTAKBANK",
+  "ETERNAL",
   "TECHM",
-  "BHARTIARTL",
   "ICICIBANK",
+  "BHARTIARTL",
   "JSWSTEEL",
   "INDIGO",
   "HCLTECH"
@@ -643,8 +643,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.56,
-     "display": "0.56%",
+     "value": 0.54,
+     "display": "0.54%",
      "status": "fail",
      "rule": "0%"
     },
@@ -675,8 +675,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 1316494.0,
-     "display": "₹13.16 L Cr",
+     "value": 1330250.0,
+     "display": "₹13.30 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -698,7 +698,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-11"
+   "checked": "2026-11-18"
   },
   "INDIGO": {
    "checks": [
@@ -777,6 +777,84 @@
    },
    "pledge_source": "NSE pledge disclosures",
    "checked": "2026-11-12"
+  },
+  "DRREDDY": {
+   "checks": [
+    {
+     "key": "debt",
+     "label": "Debt / Equity",
+     "value": 0.21,
+     "display": "0.21",
+     "status": "pass",
+     "rule": "below 0.5"
+    },
+    {
+     "key": "sales",
+     "label": "Sales growth (3Y CAGR)",
+     "value": 11.0,
+     "display": "11.0%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "pledge",
+     "label": "Promoter pledge",
+     "value": 0.59,
+     "display": "0.59%",
+     "status": "fail",
+     "rule": "0%"
+    },
+    {
+     "key": "profit",
+     "label": "Profitable",
+     "value": 4285.0,
+     "display": "₹4,285 Cr profit",
+     "status": "pass",
+     "rule": "net profit > 0"
+    },
+    {
+     "key": "pgrowth",
+     "label": "Profit growth (3Y CAGR)",
+     "value": -1.7,
+     "display": "-1.7%",
+     "status": "fail",
+     "rule": "15%+"
+    },
+    {
+     "key": "piotroski",
+     "label": "Piotroski score",
+     "value": 4,
+     "display": "4/9",
+     "status": "fail",
+     "rule": "6+ of 9"
+    },
+    {
+     "key": "mcap",
+     "label": "Market cap",
+     "value": 116563.0,
+     "display": "₹1.17 L Cr",
+     "status": "pass",
+     "rule": "above ₹10,000 Cr"
+    }
+   ],
+   "passed": 3,
+   "failed": 4,
+   "to_check": 0,
+   "applicable": 7,
+   "verdict": "WEAK",
+   "piotroski_tests": {
+    "Return on assets positive": true,
+    "Operating cash flow positive": true,
+    "Return on assets improving": false,
+    "Cash flow above net profit": true,
+    "Long-term debt ratio falling": false,
+    "Current ratio improving": false,
+    "No new shares issued": true,
+    "Gross margin improving": false,
+    "Asset turnover improving": false
+   },
+   "pledge_source": "NSE pledge disclosures",
+   "checked": "2026-11-18"
   }
  },
  "alerts_log": [
@@ -849,6 +927,27 @@
    "title": "Close: OVERHEATED — DON'T CHASE · 86% above 50 DMA",
    "text": "*VESTORA ANALYST — 17 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 58)\nNifty 50 above 50 DMA: *43/50 (86%)* ▼6 pts in 5 days\nAbove 200 DMA: 35/50 (70%)\nStrong sectors: Telecom 1/1, Construction 1/1, Services 2/2\nWatchlist (9): ADANIPORTS, KOTAKBANK, ETERNAL, TECHM, ICICIBANK, BHARTIARTL, JSWSTEEL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
+  },
+  {
+   "date": "2026-11-18",
+   "type": "new_stock",
+   "title": "New in watchlist: DRREDDY",
+   "text": "*VESTORA ANALYST* · 18 Nov 2026\n⭐ *New stock in watchlist: DRREDDY*\nDr. Reddy's Laboratories Ltd. · Healthcare\n₹1,398 | +11.4% vs 50 DMA | RS +13.4% vs Nifty (3M) | 0.0% off 52W high\n\nFundamentals: *3/7 passed* — WEAK\n✅ Debt / Equity: 0.21\n❌ Sales growth (3Y CAGR): 11.0%\n❌ Promoter pledge: 0.59%\n✅ Profitable: ₹4,285 Cr profit\n❌ Profit growth (3Y CAGR): -1.7%\n❌ Piotroski score: 4/9\n✅ Market cap: ₹1.17 L Cr\n\nMarket mode: OVERHEATED — DON'T CHASE",
+   "sent": false
+  },
+  {
+   "date": "2026-11-18",
+   "type": "exits",
+   "title": "Dropped: JSWSTEEL",
+   "text": "*VESTORA ANALYST* · 18 Nov 2026\n↘️ Dropped from watchlist: *JSWSTEEL*\n(no longer meets the 50 DMA / strength / sector-breadth rules)",
+   "sent": false
+  },
+  {
+   "date": "2026-11-18",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 82% above 50 DMA",
+   "text": "*VESTORA ANALYST — 18 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 67)\nNifty 50 above 50 DMA: *41/50 (82%)* ▼12 pts in 5 days\nAbove 200 DMA: 34/50 (68%)\nStrong sectors: Construction 1/1, Services 2/2, Healthcare 5/5\nWatchlist (9): DRREDDY, ETERNAL, ADANIPORTS, KOTAKBANK, TECHM, ICICIBANK, BHARTIARTL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
   }
  ],
  "first_seen": {
@@ -856,10 +955,10 @@
   "ADANIPORTS": "2026-11-06",
   "ETERNAL": "2026-11-06",
   "TECHM": "2026-11-06",
-  "JSWSTEEL": "2026-11-06",
   "HCLTECH": "2026-11-06",
   "ICICIBANK": "2026-11-06",
   "BHARTIARTL": "2026-11-11",
-  "INDIGO": "2026-11-12"
+  "INDIGO": "2026-11-12",
+  "DRREDDY": "2026-11-18"
  }
 }

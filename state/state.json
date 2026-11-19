@@ -1,7 +1,18 @@
 {
- "asof": "2026-11-18",
+ "asof": "2026-11-19",
  "regime": "OVERHEATED",
  "watchlist": [
+  "DRREDDY",
+  "ADANIPORTS",
+  "ETERNAL",
+  "KOTAKBANK",
+  "ICICIBANK",
+  "BHARTIARTL",
+  "TECHM",
+  "INDIGO",
+  "HCLTECH"
+ ],
+ "prev_watchlist": [
   "DRREDDY",
   "ETERNAL",
   "ADANIPORTS",
@@ -9,17 +20,6 @@
   "TECHM",
   "ICICIBANK",
   "BHARTIARTL",
-  "INDIGO",
-  "HCLTECH"
- ],
- "prev_watchlist": [
-  "ADANIPORTS",
-  "KOTAKBANK",
-  "ETERNAL",
-  "TECHM",
-  "ICICIBANK",
-  "BHARTIARTL",
-  "JSWSTEEL",
   "INDIGO",
   "HCLTECH"
  ],
@@ -753,8 +753,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 218854.0,
-     "display": "₹2.19 L Cr",
+     "value": 211701.0,
+     "display": "₹2.12 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -776,7 +776,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-12"
+   "checked": "2026-11-19"
   },
   "DRREDDY": {
    "checks": [
@@ -947,6 +947,13 @@
    "type": "summary",
    "title": "Close: OVERHEATED — DON'T CHASE · 82% above 50 DMA",
    "text": "*VESTORA ANALYST — 18 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 67)\nNifty 50 above 50 DMA: *41/50 (82%)* ▼12 pts in 5 days\nAbove 200 DMA: 34/50 (68%)\nStrong sectors: Construction 1/1, Services 2/2, Healthcare 5/5\nWatchlist (9): DRREDDY, ETERNAL, ADANIPORTS, KOTAKBANK, TECHM, ICICIBANK, BHARTIARTL, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-19",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 92% above 50 DMA",
+   "text": "*VESTORA ANALYST — 19 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 61)\nNifty 50 above 50 DMA: *46/50 (92%)* ▼4 pts in 5 days\nAbove 200 DMA: 34/50 (68%)\nStrong sectors: Construction 1/1, Healthcare 5/5, Telecom 1/1\nWatchlist (9): DRREDDY, ADANIPORTS, ETERNAL, KOTAKBANK, ICICIBANK, BHARTIARTL, TECHM, INDIGO, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],

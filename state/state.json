@@ -1,7 +1,20 @@
 {
- "asof": "2026-11-25",
+ "asof": "2026-11-26",
  "regime": "OVERHEATED",
  "watchlist": [
+  "DRREDDY",
+  "TECHM",
+  "KOTAKBANK",
+  "ADANIPORTS",
+  "ETERNAL",
+  "ICICIBANK",
+  "BHARTIARTL",
+  "BSE",
+  "INDIGO",
+  "HCLTECH",
+  "APOLLOHOSP"
+ ],
+ "prev_watchlist": [
   "DRREDDY",
   "ETERNAL",
   "KOTAKBANK",
@@ -12,17 +25,6 @@
   "BSE",
   "INDIGO",
   "APOLLOHOSP",
-  "HCLTECH"
- ],
- "prev_watchlist": [
-  "DRREDDY",
-  "ADANIPORTS",
-  "TECHM",
-  "BHARTIARTL",
-  "ICICIBANK",
-  "KOTAKBANK",
-  "ETERNAL",
-  "INDIGO",
   "HCLTECH"
  ],
  "constituents": [
@@ -755,8 +757,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 211701.0,
-     "display": "₹2.12 L Cr",
+     "value": 217501.0,
+     "display": "₹2.18 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -778,7 +780,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-19"
+   "checked": "2026-11-26"
   },
   "DRREDDY": {
    "checks": [
@@ -1147,6 +1149,13 @@
    "type": "summary",
    "title": "Close: OVERHEATED — DON'T CHASE · 90% above 50 DMA",
    "text": "*VESTORA ANALYST — 25 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 67)\nNifty 50 above 50 DMA: *45/50 (90%)* ▲4 pts in 5 days\nAbove 200 DMA: 38/50 (76%)\nStrong sectors: FMCG 4/4, Services 2/2, Consumer Services 2/2\nWatchlist (11): DRREDDY, ETERNAL, KOTAKBANK, TECHM, ADANIPORTS, ICICIBANK, BHARTIARTL, BSE, INDIGO, APOLLOHOSP, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-26",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 88% above 50 DMA",
+   "text": "*VESTORA ANALYST — 26 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 68)\nNifty 50 above 50 DMA: *44/50 (88%)* ▲6 pts in 5 days\nAbove 200 DMA: 39/50 (78%)\nStrong sectors: FMCG 4/4, Financials 12/12, Consumer Services 2/2\nWatchlist (11): DRREDDY, TECHM, KOTAKBANK, ADANIPORTS, ETERNAL, ICICIBANK, BHARTIARTL, BSE, INDIGO, HCLTECH, APOLLOHOSP\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],

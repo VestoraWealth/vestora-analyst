@@ -1,7 +1,20 @@
 {
- "asof": "2026-11-26",
+ "asof": "2026-11-27",
  "regime": "OVERHEATED",
  "watchlist": [
+  "DRREDDY",
+  "KOTAKBANK",
+  "TECHM",
+  "ICICIBANK",
+  "ETERNAL",
+  "ADANIPORTS",
+  "BHARTIARTL",
+  "BSE",
+  "INDIGO",
+  "APOLLOHOSP",
+  "HCLTECH"
+ ],
+ "prev_watchlist": [
   "DRREDDY",
   "TECHM",
   "KOTAKBANK",
@@ -13,19 +26,6 @@
   "INDIGO",
   "HCLTECH",
   "APOLLOHOSP"
- ],
- "prev_watchlist": [
-  "DRREDDY",
-  "ETERNAL",
-  "KOTAKBANK",
-  "TECHM",
-  "ADANIPORTS",
-  "ICICIBANK",
-  "BHARTIARTL",
-  "BSE",
-  "INDIGO",
-  "APOLLOHOSP",
-  "HCLTECH"
  ],
  "constituents": [
   "ADANIENT",
@@ -133,8 +133,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 513136.0,
-     "display": "₹5.13 L Cr",
+     "value": 497445.0,
+     "display": "₹4.97 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -156,7 +156,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "ADANIPORTS": {
    "checks": [
@@ -211,8 +211,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 441669.0,
-     "display": "₹4.42 L Cr",
+     "value": 433144.0,
+     "display": "₹4.33 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -234,7 +234,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "ETERNAL": {
    "checks": [
@@ -289,8 +289,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 335345.0,
-     "display": "₹3.35 L Cr",
+     "value": 334424.0,
+     "display": "₹3.34 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -312,7 +312,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "TECHM": {
    "checks": [
@@ -335,8 +335,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.54,
-     "display": "0.54%",
+     "value": 0.58,
+     "display": "0.58%",
      "status": "fail",
      "rule": "0%"
     },
@@ -367,8 +367,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 154708.0,
-     "display": "₹1.55 L Cr",
+     "value": 160788.0,
+     "display": "₹1.61 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -390,7 +390,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "JSWSTEEL": {
    "checks": [
@@ -491,8 +491,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.31,
-     "display": "0.31%",
+     "value": 0.29,
+     "display": "0.29%",
      "status": "fail",
      "rule": "0%"
     },
@@ -523,8 +523,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 363879.0,
-     "display": "₹3.64 L Cr",
+     "value": 385451.0,
+     "display": "₹3.85 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -546,7 +546,7 @@
     "Asset turnover improving": true
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "ICICIBANK": {
    "checks": [
@@ -569,8 +569,8 @@
     {
      "key": "pledge",
      "label": "Promoter pledge",
-     "value": 0.86,
-     "display": "0.86%",
+     "value": 0.83,
+     "display": "0.83%",
      "status": "fail",
      "rule": "0%"
     },
@@ -601,8 +601,8 @@
     {
      "key": "mcap",
      "label": "Market cap",
-     "value": 1178196.0,
-     "display": "₹11.78 L Cr",
+     "value": 1144798.0,
+     "display": "₹11.45 L Cr",
      "status": "pass",
      "rule": "above ₹10,000 Cr"
     }
@@ -624,7 +624,7 @@
     "Asset turnover improving": false
    },
    "pledge_source": "NSE pledge disclosures",
-   "checked": "2026-11-20"
+   "checked": "2026-11-27"
   },
   "BHARTIARTL": {
    "checks": [
@@ -1156,6 +1156,13 @@
    "type": "summary",
    "title": "Close: OVERHEATED — DON'T CHASE · 88% above 50 DMA",
    "text": "*VESTORA ANALYST — 26 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 68)\nNifty 50 above 50 DMA: *44/50 (88%)* ▲6 pts in 5 days\nAbove 200 DMA: 39/50 (78%)\nStrong sectors: FMCG 4/4, Financials 12/12, Consumer Services 2/2\nWatchlist (11): DRREDDY, TECHM, KOTAKBANK, ADANIPORTS, ETERNAL, ICICIBANK, BHARTIARTL, BSE, INDIGO, HCLTECH, APOLLOHOSP\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
+   "sent": false
+  },
+  {
+   "date": "2026-11-27",
+   "type": "summary",
+   "title": "Close: OVERHEATED — DON'T CHASE · 86% above 50 DMA",
+   "text": "*VESTORA ANALYST — 27 Nov 2026 close*\n🟠 Mode: *OVERHEATED — DON'T CHASE* (score 59)\nNifty 50 above 50 DMA: *43/50 (86%)* ▼6 pts in 5 days\nAbove 200 DMA: 38/50 (76%)\nStrong sectors: FMCG 4/4, Services 2/2, Financials 11/12\nWatchlist (11): DRREDDY, KOTAKBANK, TECHM, ICICIBANK, ETERNAL, ADANIPORTS, BHARTIARTL, BSE, INDIGO, APOLLOHOSP, HCLTECH\nDashboard: https://vestorawealth.github.io/vestora-analyst/",
    "sent": false
   }
  ],
